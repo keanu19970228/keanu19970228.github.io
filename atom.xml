@@ -6,7 +6,7 @@
   <link href="http://keanu19970228.github.io/atom.xml" rel="self"/>
   
   <link href="http://keanu19970228.github.io/"/>
-  <updated>2022-07-02T08:45:03.124Z</updated>
+  <updated>2022-07-02T08:48:54.480Z</updated>
   <id>http://keanu19970228.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>cloak 三种方式</title>
+    <link href="http://keanu19970228.github.io/2022/07/02/cloak-san-chong-fang-shi/"/>
+    <id>http://keanu19970228.github.io/2022/07/02/cloak-san-chong-fang-shi/</id>
+    <published>2022-07-02T08:47:29.000Z</published>
+    <updated>2022-07-02T08:48:54.480Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;cloak 三种方式&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-php&quot; data-language=&quot;php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;token php</summary>
+        
+      
+    
+    
+    
+    
+    <category term="php" scheme="http://keanu19970228.github.io/tags/php/"/>
+    
+  </entry>
   
   <entry>
     <title>Top 100</title>
