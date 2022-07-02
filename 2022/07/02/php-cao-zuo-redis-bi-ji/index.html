@@ -1,0 +1,286 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    
+
+<meta charset="utf-8" >
+
+<title>PHP 操作 Redis 笔记</title>
+<meta name="keywords" content="PHP 操作 Redis 笔记, LuCarlo">
+<meta name="description" content="PHP 操作 Redis
+/*1.Connection*/
+$redis = new Redis();
+$redis-&gt;connect('127.0.0.1',6379,1);//短链接，本地host，端口为6379，超过1秒放弃链接">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/fontawesome.css">
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+  <meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="LuCarlo" type="application/atom+xml">
+</head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://keanu19970228.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://keanu19970228.github.io">
+        <h1 class="site-title">LuCarlo</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">PHP 操作 Redis 笔记</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-07-02</span>
+            
+              <span>
+              <i class="icon-pricetags-outline"></i>
+                
+                  <a href="/tags/php/">
+                  php
+                    
+                      ，
+                    
+                  </a>
+                
+                  <a href="/tags/%E7%AC%94%E8%AE%B0/">
+                  笔记
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content-wrapper">
+            <div class="post-content">
+              <p>PHP 操作 Redis</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">/*1.Connection*/</span>
+<span class="token variable">$redis</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Redis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'127.0.0.1'</span><span class="token punctuation">,</span><span class="token number">6379</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//短链接，本地host，端口为6379，超过1秒放弃链接</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'127.0.0.1'</span><span class="token punctuation">,</span><span class="token number">6379</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//短链接(同上)</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">pconnect</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'127.0.0.1'</span><span class="token punctuation">,</span><span class="token number">6379</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//长链接，本地host，端口为6379，超过1秒放弃链接</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">popen</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'127.0.0.1'</span><span class="token punctuation">,</span><span class="token number">6379</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//长链接(同上)</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">auth</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'password'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//登录验证密码，返回【true | false】</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">select</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//选择redis库,0~15 共16个库</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//释放资源</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">ping</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//检查是否还再链接,[+pong]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">ttl</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查看失效时间[-1 | timestamps]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">persist</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//移除失效时间[ 1 | 0]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token variable">$array</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//返回或保存给定列表、集合、有序集合key中经过排序的元素，$array为参数limit等！【配合$array很强大】 [array|false]</span>
+ 
+<span class="token comment">/*2.共性的运算归类*/</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">expire</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//设置失效时间[true | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token number">15</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//把当前库中的key移动到15库中[0|1]</span>
+<span class="token comment">//string</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">strlen</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//获取当前key的长度</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'string'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//把string追加到key现有的value中[追加后的个数]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">incr</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//自增1，如不存在key,赋值为1(只对整数有效,存储以10进制64位，redis中为str)[new_num | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">incrby</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token variable">$num</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//自增$num,不存在为赋值,值需为整数[new_num | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">decr</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//自减1，[new_num | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">decrby</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token variable">$num</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//自减$num，[ new_num | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">setex</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//key=value，有效期为10秒[true]</span>
+<span class="token comment">//list</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">llen</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//返回列表key的长度,不存在key返回0， [ len | 0]</span>
+<span class="token comment">//set</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">scard</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//返回集合key的基数(集合中元素的数量)。[num | 0]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">sMove</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key1'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'key2'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'member'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//移动，将member元素从key1集合移动到key2集合。[1 | 0]</span>
+<span class="token comment">//Zset</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zcard</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//返回集合key的基数(集合中元素的数量)。[num | 0]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zcount</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//返回有序集key中，score值在min和max之间(默认包括score值等于min或max)的成员。[num | 0]</span>
+<span class="token comment">//hash</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hexists</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'field'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查看hash中是否存在field,[1 | 0]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hincrby</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'field'</span><span class="token punctuation">,</span><span class="token variable">$int_num</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//为哈希表key中的域field的值加上量(+|-)num,[new_num | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hlen</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//返回哈希表key中域的数量。[ num | 0]</span>
+ 
+<span class="token comment">/*3.Server*/</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">dbSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//返回当前库中的key的个数</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">flushAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//清空整个redis[总true]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">flushDB</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//清空当前redis库[总true]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//同步??把数据存储到磁盘-dump.rdb[true]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">bgsave</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//异步？？把数据存储到磁盘-dump.rdb[true]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查询当前redis的状态 [verson:2.4.5....]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">lastSave</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//上次存储时间key的时间[timestamp]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">watch</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'keyn'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//监视一个(或多个) key ，如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断 [true]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">unwatch</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'keyn'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//取消监视一个(或多个) key [true]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">multi</span><span class="token punctuation">(</span><span class="token class-name static-context">Redis</span><span class="token operator">::</span><span class="token constant">MULTI</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//开启事务，事务块内的多条命令会按照先后顺序被放进一个队列当中，最后由 EXEC 命令在一个原子时间内执行。</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">multi</span><span class="token punctuation">(</span><span class="token class-name static-context">Redis</span><span class="token operator">::</span><span class="token constant">PIPELINE</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//开启管道，事务块内的多条命令会按照先后顺序被放进一个队列当中，最后由 EXEC 命令在一个原子时间内执行。</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//执行所有事务块内的命令，；【事务块内所有命令的返回值，按命令执行的先后顺序排列，当操作被打断时，返回空值 false】</span>
+ 
+<span class="token comment">/*4.String，键值对，创建更新同操作*/</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">setOption</span><span class="token punctuation">(</span><span class="token class-name static-context">Redis</span><span class="token operator">::</span><span class="token constant">OPT_PREFIX</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'hf_'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//设置表前缀为hf_</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//设置key=aa value=1 [true]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">mset</span><span class="token punctuation">(</span><span class="token variable">$arr</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//设置一个或多个键值[true]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">setnx</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//key=value,key存在返回false[|true]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//获取key [value]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">mget</span><span class="token punctuation">(</span><span class="token variable">$arr</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//(string|arr),返回所查询键的值</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">del</span><span class="token punctuation">(</span><span class="token variable">$key_arr</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//(string|arr)删除key，支持数组批量删除【返回删除个数】</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">delete</span><span class="token punctuation">(</span><span class="token variable">$key_str</span><span class="token punctuation">,</span><span class="token variable">$key2</span><span class="token punctuation">,</span><span class="token variable">$key3</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//删除keys,[del_num]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">getset</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'old_key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'new_value'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//先获得key的值，然后重新赋值,[old_value | false]</span>
+ 
+<span class="token comment">/*5.List栈的结构,注意表头表尾,创建更新分开操作*/</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">lpush</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//增，只能将一个值value插入到列表key的表头，不存在就创建 [列表的长度 |false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">rpush</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//增，只能将一个值value插入到列表key的表尾 [列表的长度 |false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">lInsert</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span> <span class="token class-name static-context">Redis</span><span class="token operator">::</span><span class="token constant">AFTER</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'value'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'new_value'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//增，将值value插入到列表key当中，位于值value之前或之后。[new_len | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">lpushx</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//增，只能将一个值value插入到列表key的表头，不存在不创建 [列表的长度 |false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">rpushx</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//增，只能将一个值value插入到列表key的表尾，不存在不创建 [列表的长度 |false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">lpop</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//删，移除并返回列表key的头元素,[被删元素 | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">rpop</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//删，移除并返回列表key的尾元素,[被删元素 | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">lrem</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value'</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//删，根据参数count的值，移除列表中与参数value相等的元素count=(0|-n表头向尾|+n表尾向头移除n个value) [被移除的数量 | 0]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">ltrim</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span>start<span class="token punctuation">,</span>end<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//删，列表修剪，保留(start,end)之间的值 [true|false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">lset</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span>index<span class="token punctuation">,</span><span class="token string single-quoted-string">'new_v'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//改，从表头数，将列表key下标为第index的元素的值为new_v, [true | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">lindex</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span>index<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，返回列表key中，下标为index的元素[value|false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">lrange</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，(start,stop|0,-1)返回列表key中指定区间内的元素，区间以偏移量start和stop指定。[array|false]</span>
+<span class="token comment">/*6.Set，没有重复的member，创建更新同操作*/</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">sadd</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value1'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value2'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'valuen'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//增，改，将一个或多个member元素加入到集合key当中，已经存在于集合的member元素将被忽略。[insert_num]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">srem</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value1'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value2'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'valuen'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//删，移除集合key中的一个或多个member元素，不存在的member元素会被忽略 [del_num | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">smembers</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，返回集合key中的所有成员 [array | '']</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">sismember</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'member'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//判断member元素是否是集合key的成员 [1 | 0]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">spop</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//删，移除并返回集合中的一个随机元素 [member | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">srandmember</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，返回集合中的一个随机元素 [member | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">sinter</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key1'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'key2'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'keyn'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，返回所有给定集合的交集 [array | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">sunion</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key1'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'key2'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'keyn'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，返回所有给定集合的并集 [array | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">sdiff</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key1'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'key2'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'keyn'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，返回所有给定集合的差集 [array | false]</span>
+ 
+<span class="token comment">/*7.Zset，没有重复的member，有排序顺序,创建更新同操作*/</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zAdd</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token variable">$score1</span><span class="token punctuation">,</span><span class="token variable">$member1</span><span class="token punctuation">,</span><span class="token variable">$scoreN</span><span class="token punctuation">,</span><span class="token variable">$memberN</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//增，改，将一个或多个member元素及其score值加入到有序集key当中。[num | 0]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zrem</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'member1'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'membern'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//删，移除有序集key中的一个或多个成员，不存在的成员将被忽略。[del_num | 0]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zscore</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'member'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查,通过值反拿权 [num | null]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zrange</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token variable">$start</span><span class="token punctuation">,</span><span class="token variable">$stop</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，通过(score从小到大)【排序名次范围】拿member值，返回有序集key中，【指定区间内】的成员 [array | null]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zrevrange</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token variable">$start</span><span class="token punctuation">,</span><span class="token variable">$stop</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，通过(score从大到小)【排序名次范围】拿member值，返回有序集key中，【指定区间内】的成员 [array | null]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zrangebyscore</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token variable">$min</span><span class="token punctuation">,</span><span class="token variable">$max</span><span class="token punctuation">[</span><span class="token punctuation">,</span><span class="token variable">$config</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，通过scroe权范围拿member值，返回有序集key中，指定区间内的(从小到大排)成员[array | null]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zrevrangebyscore</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token variable">$max</span><span class="token punctuation">,</span><span class="token variable">$min</span><span class="token punctuation">[</span><span class="token punctuation">,</span><span class="token variable">$config</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，通过scroe权范围拿member值，返回有序集key中，指定区间内的(从大到小排)成员[array | null]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zrank</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'member'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，通过member值查(score从小到大)排名结果中的【member排序名次】[order | null]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">zrevrank</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'member'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，通过member值查(score从大到小)排名结果中的【member排序名次】[order | null]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">ZINTERSTORE</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//交集</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">ZUNIONSTORE</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//差集</span>
+<span class="token comment">/*8.Hash，表结构，创建更新同操作*/</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hset</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'field'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'value'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//增，改，将哈希表key中的域field的值设为value,不存在创建,存在就覆盖【1 | 0】</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hget</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'field'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，取值【value|false】</span>
+<span class="token variable">$arr</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'one'</span><span class="token operator">=&gt;</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token variable">$arr2</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'one'</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hmset</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token variable">$arr</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//增，改，设置多值$arr为(索引|关联)数组,$arr[key]=field, [ true ]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hmget</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token variable">$arr2</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，获取指定下标的field，[$arr | false]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hgetall</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，返回哈希表key中的所有域和值。[当key不存在时，返回一个空表]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hkeys</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，返回哈希表key中的所有域。[当key不存在时，返回一个空表]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hvals</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查，返回哈希表key中的所有值。[当key不存在时，返回一个空表]</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">hdel</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'key'</span><span class="token punctuation">,</span><span class="token variable">$arr2</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//删，删除指定下标的field,不存在的域将被忽略,[num | false]</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+            </div>
+            <div class="top-div">
+              
+            </div>
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="/2022/07/02/cloak-san-chong-fang-shi/">
+              <h3 class="post-title">
+                下一篇：cloak 三种方式
+              </h3>
+            </a>
+          </div>
+        
+      </div>
+
+    
+
+
+      <footer>
+<div class="site-footer">
+  <div class="social-container">
+    <!-- 
+      
+        <a href="https://github.com/f-dong" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+     -->
+  </div>
+  <!-- 
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+   -->
+</div>
+</footer>
+
+
+    </div>
+    
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+  </body>
+</html>

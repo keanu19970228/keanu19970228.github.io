@@ -6,7 +6,7 @@
   <link href="http://keanu19970228.github.io/atom.xml" rel="self"/>
   
   <link href="http://keanu19970228.github.io/"/>
-  <updated>2022-07-02T08:50:33.065Z</updated>
+  <updated>2022-07-02T09:34:25.628Z</updated>
   <id>http://keanu19970228.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>PHP 操作 Redis 笔记</title>
+    <link href="http://keanu19970228.github.io/2022/07/02/php-cao-zuo-redis-bi-ji/"/>
+    <id>http://keanu19970228.github.io/2022/07/02/php-cao-zuo-redis-bi-ji/</id>
+    <published>2022-07-02T09:31:07.000Z</published>
+    <updated>2022-07-02T09:34:25.628Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;PHP 操作 Redis&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-php&quot; data-language=&quot;php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;token</summary>
+        
+      
+    
+    
+    
+    
+    <category term="php" scheme="http://keanu19970228.github.io/tags/php/"/>
+    
+    <category term="笔记" scheme="http://keanu19970228.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>cloak 三种方式</title>
