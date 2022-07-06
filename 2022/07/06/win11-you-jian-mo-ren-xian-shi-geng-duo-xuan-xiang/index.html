@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    
+
+<meta charset="utf-8" >
+
+<title>win11 右键默认显示更多选项</title>
+<meta name="keywords" content="win11 右键默认显示更多选项, LuCarlo">
+<meta name="description" content="问题
+Win11 的右键菜单隐藏了很多选项，如果想要找到一些常用的功能，需要点击『显示更多选项』才能展开，这操作起来颇为麻烦
+理想效果
+
+解决方案
+1、管理员运行命令：
+reg.exe add "HKCU\Software\Classes\">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/fontawesome.css">
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+  <meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="LuCarlo" type="application/atom+xml">
+</head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://keanu19970228.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://keanu19970228.github.io">
+        <h1 class="site-title">LuCarlo</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">win11 右键默认显示更多选项</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-07-06</span>
+            
+              <span>
+              <i class="icon-pricetags-outline"></i>
+                
+                  <a href="/tags/%E6%9D%82%E9%A1%B9/">
+                  杂项
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content-wrapper">
+            <div class="post-content">
+              <p><strong>问题</strong></p>
+<p>Win11 的右键菜单隐藏了很多选项，如果想要找到一些常用的功能，需要点击『显示更多选项』才能展开，这操作起来颇为麻烦<br><img src="https://pica.zhimg.com/80/v2-dd6badd52ad626c872254873874d0537_720w.jpg?source=1940ef5c" alt="默认显示"></p>
+<p><strong>理想效果</strong></p>
+<p><img src="https://pica.zhimg.com/80/v2-2dbe81e548054bafd1dc1fc56b13a379_720w.jpg?source=1940ef5c" alt="理想效果"></p>
+<p><strong>解决方案</strong></p>
+<p>1、管理员运行命令：</p>
+<pre class="line-numbers language-none"><code class="language-none">reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>2、重启资源管理器</p>
+<pre class="line-numbers language-none"><code class="language-none">taskkill /f /im explorer.exe &amp; start explorer.exe<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>恢复默认</strong></p>
+<p>如果要恢复默认右键配置，只需执行以下命令，然后重启资源管理器即可：</p>
+<pre class="line-numbers language-none"><code class="language-none">reg.exe delete "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /va /f<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+            </div>
+            <div class="top-div">
+              
+            </div>
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="/2022/07/02/php-cao-zuo-redis-bi-ji/">
+              <h3 class="post-title">
+                下一篇：PHP 操作 Redis 笔记
+              </h3>
+            </a>
+          </div>
+        
+      </div>
+
+    
+
+
+      <footer>
+<div class="site-footer">
+  <div class="social-container">
+    <!-- 
+      
+        <a href="https://github.com/f-dong" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+     -->
+  </div>
+  <!-- 
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+   -->
+</div>
+</footer>
+
+
+    </div>
+    
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+  </body>
+</html>
