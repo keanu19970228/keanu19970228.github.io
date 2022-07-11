@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    
+
+<meta charset="utf-8" >
+
+<title>Javascript 方法从 Json 对象中获取特定值</title>
+<meta name="keywords" content="Javascript 方法从 Json 对象中获取特定值, LuCarlo">
+<meta name="description" content="&lt;script&gt;
+// 模拟国家
+var country_data = {
+    	"7": "俄罗斯 ",
+    	"380": "乌克兰",
+    	"49": "德国",
+    	"44": "英国",
+    	">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/fontawesome.css">
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+  <meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="LuCarlo" type="application/atom+xml">
+</head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://keanu19970228.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://keanu19970228.github.io">
+        <h1 class="site-title">LuCarlo</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">Javascript 方法从 Json 对象中获取特定值</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-07-11</span>
+            
+              <span>
+              <i class="icon-pricetags-outline"></i>
+                
+                  <a href="/tags/Javascript/">
+                  Javascript
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content-wrapper">
+            <div class="post-content">
+              <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token operator">&lt;</span>script<span class="token operator">&gt;</span>
+<span class="token comment">// 模拟国家</span>
+<span class="token keyword">var</span> country_data <span class="token operator">=</span> <span class="token punctuation">{</span>
+    	<span class="token string-property property">"7"</span><span class="token operator">:</span> <span class="token string">"俄罗斯 "</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"380"</span><span class="token operator">:</span> <span class="token string">"乌克兰"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"49"</span><span class="token operator">:</span> <span class="token string">"德国"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"44"</span><span class="token operator">:</span> <span class="token string">"英国"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"33"</span><span class="token operator">:</span> <span class="token string">"法国"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"34"</span><span class="token operator">:</span> <span class="token string">"西班牙"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"46"</span><span class="token operator">:</span> <span class="token string">"瑞典"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"31"</span><span class="token operator">:</span> <span class="token string">"荷兰"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"45"</span><span class="token operator">:</span> <span class="token string">"丹麦"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"351"</span><span class="token operator">:</span> <span class="token string">"葡萄牙"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"1000"</span><span class="token operator">:</span> <span class="token string">"加拿大 Virtual"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"1"</span><span class="token operator">:</span> <span class="token string">"美国"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"420"</span><span class="token operator">:</span> <span class="token string">"捷克共和国"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"48"</span><span class="token operator">:</span> <span class="token string">"波兰"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"40"</span><span class="token operator">:</span> <span class="token string">"罗马尼亚语"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"62"</span><span class="token operator">:</span> <span class="token string">"印尼"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"63"</span><span class="token operator">:</span> <span class="token string">"菲利宾"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"212"</span><span class="token operator">:</span> <span class="token string">"摩洛哥"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"998"</span><span class="token operator">:</span> <span class="token string">"乌兹别克斯坦"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"84"</span><span class="token operator">:</span> <span class="token string">"越南"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"371"</span><span class="token operator">:</span> <span class="token string">"拉脱维亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"370"</span><span class="token operator">:</span> <span class="token string">"立陶宛"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"372"</span><span class="token operator">:</span> <span class="token string">"爱沙尼亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"381"</span><span class="token operator">:</span> <span class="token string">"塞尔维亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"373"</span><span class="token operator">:</span> <span class="token string">"摩尔多瓦"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"995"</span><span class="token operator">:</span> <span class="token string">"佐治亚州"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"77"</span><span class="token operator">:</span> <span class="token string">"哈萨克斯坦"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"55"</span><span class="token operator">:</span> <span class="token string">"巴西"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"52"</span><span class="token operator">:</span> <span class="token string">"墨西哥"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"54"</span><span class="token operator">:</span> <span class="token string">"阿根廷"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"90"</span><span class="token operator">:</span> <span class="token string">"火鸡"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"20"</span><span class="token operator">:</span> <span class="token string">"埃及"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"972"</span><span class="token operator">:</span> <span class="token string">"以色列"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"91"</span><span class="token operator">:</span> <span class="token string">"印度"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"967"</span><span class="token operator">:</span> <span class="token string">"也门"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"852"</span><span class="token operator">:</span> <span class="token string">"香港"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"234"</span><span class="token operator">:</span> <span class="token string">"尼日利亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"353"</span><span class="token operator">:</span> <span class="token string">"爱尔兰"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"225"</span><span class="token operator">:</span> <span class="token string">"科特迪瓦"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"233"</span><span class="token operator">:</span> <span class="token string">"加纳"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"359"</span><span class="token operator">:</span> <span class="token string">"保加利亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"232"</span><span class="token operator">:</span> <span class="token string">"谢尔·里昂"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"254"</span><span class="token operator">:</span> <span class="token string">"肯亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"509"</span><span class="token operator">:</span> <span class="token string">"海地"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"58"</span><span class="token operator">:</span> <span class="token string">"委内瑞拉"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"57"</span><span class="token operator">:</span> <span class="token string">"哥伦比亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"60"</span><span class="token operator">:</span> <span class="token string">"马来西亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"504"</span><span class="token operator">:</span> <span class="token string">"洪都拉斯"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"92"</span><span class="token operator">:</span> <span class="token string">"巴基斯坦"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"226"</span><span class="token operator">:</span> <span class="token string">"布基纳法索"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"220"</span><span class="token operator">:</span> <span class="token string">"冈比亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"992"</span><span class="token operator">:</span> <span class="token string">"塔吉克斯坦"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"964"</span><span class="token operator">:</span> <span class="token string">"伊拉克"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"98"</span><span class="token operator">:</span> <span class="token string">"伊朗"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"994"</span><span class="token operator">:</span> <span class="token string">"阿塞拜疆"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"591"</span><span class="token operator">:</span> <span class="token string">"玻利维亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"94"</span><span class="token operator">:</span> <span class="token string">"斯里兰卡"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"976"</span><span class="token operator">:</span> <span class="token string">"蒙古"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"977"</span><span class="token operator">:</span> <span class="token string">"尼泊尔"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"223"</span><span class="token operator">:</span> <span class="token string">"马里"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"235"</span><span class="token operator">:</span> <span class="token string">"乍得"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"30"</span><span class="token operator">:</span> <span class="token string">"希腊"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"65"</span><span class="token operator">:</span> <span class="token string">"新加坡"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"237"</span><span class="token operator">:</span> <span class="token string">"喀麦隆"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"39"</span><span class="token operator">:</span> <span class="token string">"意大利"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"593"</span><span class="token operator">:</span> <span class="token string">"厄瓜多尔"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"966"</span><span class="token operator">:</span> <span class="token string">"沙特阿拉伯"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"41"</span><span class="token operator">:</span> <span class="token string">"瑞士"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"66"</span><span class="token operator">:</span> <span class="token string">"泰国"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"962"</span><span class="token operator">:</span> <span class="token string">"约旦"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"389"</span><span class="token operator">:</span> <span class="token string">"北马其顿"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"51"</span><span class="token operator">:</span> <span class="token string">"秘鲁"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"249"</span><span class="token operator">:</span> <span class="token string">"苏丹"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"503"</span><span class="token operator">:</span> <span class="token string">"萨尔瓦多"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"256"</span><span class="token operator">:</span> <span class="token string">"乌干达"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"260"</span><span class="token operator">:</span> <span class="token string">"赞比亚"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"265"</span><span class="token operator">:</span> <span class="token string">"马拉维"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"245"</span><span class="token operator">:</span> <span class="token string">"几内亚比绍"</span><span class="token punctuation">,</span>
+    	<span class="token string-property property">"222"</span><span class="token operator">:</span> <span class="token string">"毛里塔尼亚"</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">//从json中获得key指定值</span>
+<span class="token keyword">function</span> <span class="token function">getJsonValue</span><span class="token punctuation">(</span><span class="token parameter">obj<span class="token punctuation">,</span>name</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">var</span> result <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> value  <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> key <span class="token keyword">in</span> obj<span class="token punctuation">)</span><span class="token punctuation">{</span>        
+        value <span class="token operator">=</span> obj<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>key <span class="token operator">==</span> name<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword">return</span> value<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span> <span class="token keyword">typeof</span> value <span class="token operator">==</span> <span class="token string">"object"</span> <span class="token punctuation">)</span><span class="token punctuation">{</span>
+            result <span class="token operator">=</span> <span class="token function">getJsonValue</span><span class="token punctuation">(</span>value<span class="token punctuation">,</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">getJsonValue</span><span class="token punctuation">(</span>country_data<span class="token punctuation">,</span><span class="token string">'7'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">&gt;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+            </div>
+            <div class="top-div">
+              
+            </div>
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="/2022/07/06/win11-you-jian-mo-ren-xian-shi-geng-duo-xuan-xiang/">
+              <h3 class="post-title">
+                下一篇：win11 右键默认显示更多选项
+              </h3>
+            </a>
+          </div>
+        
+      </div>
+
+    
+
+
+      <footer>
+<div class="site-footer">
+  <div class="social-container">
+    <!-- 
+      
+        <a href="https://github.com/f-dong" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+     -->
+  </div>
+  <!-- 
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+   -->
+</div>
+</footer>
+
+
+    </div>
+    
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+  </body>
+</html>
