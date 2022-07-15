@@ -1556,7 +1556,7 @@ pre[class*=language-] code {
   color: #fafafa;
 }
 pre[class*=language-].line-numbers {
-  background: #fafafa;
+  background: #1e1e1e;
 }
 :not(pre) > code[class*=language-],
 pre[class*=language-] {
