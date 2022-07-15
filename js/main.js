@@ -19,7 +19,7 @@ $(".post-detail img").each(function() {
 });
 
 // 代码复制
-var $copyIcon = $('<i class="fa-solid fa-copy copy-code" title="复制代码"></i>');
+var $copyIcon = $('<i class="fa-solid fa-copy copy-code" title="复制代码" style="font-size:15px;color:#ffffff;"></i>');
 $(".post-detail figure").append($copyIcon);
 $(".post-detail pre[class*=language-] code").append($copyIcon);
 $('.post-detail .copy-code').on('click', function () {
@@ -39,7 +39,7 @@ $('.post-detail .copy-code').on('click', function () {
     document.execCommand('copy');
     selection.removeAllRanges();
 
-    $(this).html('<span class="copy-success"> 复制成功</span>');
+    $(this).html('<span class="copy-success" style="font-size:10px;color:#ffffff;"> 复制成功</span>');
     setTimeout(() => {
         $(this).html('');
     }, 2500)

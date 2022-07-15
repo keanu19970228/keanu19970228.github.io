@@ -1292,7 +1292,7 @@ nav {
   border-radius: 5px;
   line-height: 1.375;
   position: relative;
-  background: #fafafa;
+  background: #1e1e1e;
   display: block;
 }
 .post-content pre code:after {
@@ -1505,7 +1505,7 @@ nav {
   line-height: 1.375;
   position: relative;
   background: #fafafa;
-  color: #476582;
+  color: #fafafa;
   display: block;
 }
 .highlight table,
@@ -1553,7 +1553,7 @@ pre[class*=language-] {
   margin: 0 !important;
 }
 pre[class*=language-] code {
-  color: #476582;
+  color: #fafafa;
 }
 pre[class*=language-].line-numbers {
   background: #fafafa;
