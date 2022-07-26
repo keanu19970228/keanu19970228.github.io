@@ -6,7 +6,7 @@
   <link href="http://keanu19970228.github.io/atom.xml" rel="self"/>
   
   <link href="http://keanu19970228.github.io/"/>
-  <updated>2022-07-20T08:51:26.161Z</updated>
+  <updated>2022-07-26T15:01:16.471Z</updated>
   <id>http://keanu19970228.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>正则匹配字符的含义</title>
+    <link href="http://keanu19970228.github.io/2022/07/26/zheng-ze-pi-pei-zi-fu-de-han-yi/"/>
+    <id>http://keanu19970228.github.io/2022/07/26/zheng-ze-pi-pei-zi-fu-de-han-yi/</id>
+    <published>2022-07-26T14:59:41.000Z</published>
+    <updated>2022-07-26T15:01:16.471Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;正则中的\d与\D、\w与\W、\s与\S各代表什么意思？&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-none&quot;&gt;&lt;code class=&quot;language-none&quot;&gt;\d：表示一个十进制的数字</summary>
+        
+      
+    
+    
+    
+    
+    <category term="杂项" scheme="http://keanu19970228.github.io/tags/%E6%9D%82%E9%A1%B9/"/>
+    
+  </entry>
   
   <entry>
     <title>简历应该怎样写？</title>
