@@ -6,7 +6,7 @@
   <link href="http://keanu19970228.github.io/atom.xml" rel="self"/>
   
   <link href="http://keanu19970228.github.io/"/>
-  <updated>2022-07-29T05:46:52.027Z</updated>
+  <updated>2022-07-30T06:35:19.215Z</updated>
   <id>http://keanu19970228.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CentOS7防火墙端口开放</title>
+    <link href="http://keanu19970228.github.io/2022/07/30/centos7-fang-huo-qiang-duan-kou-kai-fang/"/>
+    <id>http://keanu19970228.github.io/2022/07/30/centos7-fang-huo-qiang-duan-kou-kai-fang/</id>
+    <published>2022-07-30T06:33:14.000Z</published>
+    <updated>2022-07-30T06:35:19.215Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;查看当前已经开放的端口：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-bash&quot; data-language=&quot;bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;firewall-cmd --list-ports&lt;span</summary>
+        
+      
+    
+    
+    
+    
+    <category term="杂项" scheme="http://keanu19970228.github.io/tags/%E6%9D%82%E9%A1%B9/"/>
+    
+  </entry>
   
   <entry>
     <title>由于找不到msvcp140.dll无法继续执行代码</title>
