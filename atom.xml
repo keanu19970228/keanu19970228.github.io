@@ -6,7 +6,7 @@
   <link href="http://keanu19970228.github.io/atom.xml" rel="self"/>
   
   <link href="http://keanu19970228.github.io/"/>
-  <updated>2022-07-30T06:45:07.006Z</updated>
+  <updated>2022-08-04T08:19:29.670Z</updated>
   <id>http://keanu19970228.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>node.js 文末追加</title>
+    <link href="http://keanu19970228.github.io/2022/08/04/node-js-wen-mo-zhui-jia/"/>
+    <id>http://keanu19970228.github.io/2022/08/04/node-js-wen-mo-zhui-jia/</id>
+    <published>2022-08-04T08:16:14.000Z</published>
+    <updated>2022-08-04T08:19:29.670Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://nodejs.org/api/fs.html#fsappendfilepath-data-options-callback&quot;&gt;fs.appendFile(path, data[, options],</summary>
+        
+      
+    
+    
+    
+    
+    <category term="node.js" scheme="http://keanu19970228.github.io/tags/node-js/"/>
+    
+  </entry>
   
   <entry>
     <title>2018最完整区号国家手机号正则</title>
@@ -45,7 +68,7 @@
     <link href="http://keanu19970228.github.io/2022/07/30/centos7-fang-huo-qiang-duan-kou-kai-fang/"/>
     <id>http://keanu19970228.github.io/2022/07/30/centos7-fang-huo-qiang-duan-kou-kai-fang/</id>
     <published>2022-07-30T06:33:14.000Z</published>
-    <updated>2022-07-30T06:35:19.215Z</updated>
+    <updated>2022-07-30T06:51:15.721Z</updated>
     
     
       
