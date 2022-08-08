@@ -6,7 +6,7 @@
   <link href="http://keanu19970228.github.io/atom.xml" rel="self"/>
   
   <link href="http://keanu19970228.github.io/"/>
-  <updated>2022-08-04T08:19:29.670Z</updated>
+  <updated>2022-08-08T08:32:17.749Z</updated>
   <id>http://keanu19970228.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Expression 1 of SELECT list is not in GROUP BY clause and contains nonaggregated column</title>
+    <link href="http://keanu19970228.github.io/2022/08/08/expression-1-of-select-list-is-not-in-group-by-clause-and-contains-nonaggregated-column/"/>
+    <id>http://keanu19970228.github.io/2022/08/08/expression-1-of-select-list-is-not-in-group-by-clause-and-contains-nonaggregated-column/</id>
+    <published>2022-08-08T08:24:14.000Z</published>
+    <updated>2022-08-08T08:32:17.749Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;安装了mysql5.7，用group by 查询时抛出如下异常：&lt;/p&gt;
+&lt;pre class=&quot;line-numbers language-none&quot;&gt;&lt;code class=&quot;language-none&quot;&gt;Expression #1 of SELECT list is</summary>
+        
+      
+    
+    
+    
+    
+    <category term="mysql" scheme="http://keanu19970228.github.io/tags/mysql/"/>
+    
+  </entry>
   
   <entry>
     <title>node.js 文末追加</title>
