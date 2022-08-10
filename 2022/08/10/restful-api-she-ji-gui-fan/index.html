@@ -1,0 +1,818 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    
+
+<meta charset="utf-8" >
+
+<title>RESTful API 设计规范</title>
+<meta name="keywords" content="RESTful API 设计规范, LuCarlo">
+<meta name="description" content="
+本文是为 大渝网 API 开发规范拟定的一个 beta 版，文章大量参考了目前比较常见的 RESTful API 设计。
+
+关于「能愿动词」的使用为了避免歧义，文档大量使用了「能愿动词」，对应的解释如下：
+
+必须 (MUST)：绝对，严格">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/images/avatar.png">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/fontawesome.css">
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+  <meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="LuCarlo" type="application/atom+xml">
+</head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://keanu19970228.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://keanu19970228.github.io">
+        <h1 class="site-title">LuCarlo</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">RESTful API 设计规范</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-08-10</span>
+            
+              <span>
+              <i class="icon-pricetags-outline"></i>
+                
+                  <a href="/tags/%E7%AC%94%E8%AE%B0/">
+                  笔记
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content-wrapper">
+            <div class="post-content">
+              <blockquote>
+<p>本文是为 <a target="_blank" rel="noopener" href="http://cq.qq.com/">大渝网</a> <code>API</code> 开发规范拟定的一个 <code>beta</code> 版，文章大量参考了目前比较常见的 <code>RESTful API</code> 设计。</p>
+</blockquote>
+<h2 id="关于「能愿动词」的使用"><a href="#关于「能愿动词」的使用" class="headerlink" title="关于「能愿动词」的使用"></a>关于「能愿动词」的使用</h2><p>为了避免歧义，文档大量使用了「能愿动词」，对应的解释如下：</p>
+<ul>
+<li><code>必须 (MUST)</code>：绝对，严格遵循，请照做，无条件遵守；</li>
+<li><code>一定不可 (MUST NOT)</code>：禁令，严令禁止；</li>
+<li><code>应该 (SHOULD)</code> ：强烈建议这样做，但是不强求；</li>
+<li><code>不该 (SHOULD NOT)</code>：强烈不建议这样做，但是不强求；</li>
+<li><code>可以 (MAY)</code> 和 <code>可选 (OPTIONAL)</code> ：选择性高一点，在这个文档内，此词语使用较少；</li>
+</ul>
+<blockquote>
+<p>参见：<a target="_blank" rel="noopener" href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a></p>
+</blockquote>
+<h2 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h2><p>在通过 <code>API</code> 于后端服务通信的过程中，<code>应该</code> 使用 <code>HTTPS</code> 协议。</p>
+<h2 id="API-Root-URL"><a href="#API-Root-URL" class="headerlink" title="API Root URL"></a>API Root URL</h2><p><code>API</code> 的根入口点应尽可能保持足够简单，这里有两个常见的 <code>URL</code> 根例子：</p>
+<ul>
+<li>api.example.com/*</li>
+<li>example.com/api/*</li>
+</ul>
+<blockquote>
+<p>如果你的应用很庞大或者你预计它将会变的很庞大，那 <code>应该</code> 将 <code>API</code> 放到子域下。这种做法可以保持某些规模化上的灵活性。</p>
+</blockquote>
+<h2 id="Versioning"><a href="#Versioning" class="headerlink" title="Versioning"></a>Versioning</h2><p>所有的 <code>API</code> 必须保持向后兼容，你 <code>必须</code> 在引入新版本 <code>API</code> 的同时确保旧版本 <code>API</code> 仍然可用。所以 <code>应该</code> 为其提供版本支持。</p>
+<p>目前比较常见的两种版本号形式：</p>
+<h3 id="在-URL-中嵌入版本编号"><a href="#在-URL-中嵌入版本编号" class="headerlink" title="在 URL 中嵌入版本编号"></a>在 URL 中嵌入版本编号</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">api.example.com/v1/*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这种做法是版本号直观、易于调试；另一种做法是，将版本号放在 <code>HTTP Header</code> 头中：</p>
+<h3 id="通过媒体类型来指定版本信息"><a href="#通过媒体类型来指定版本信息" class="headerlink" title="通过媒体类型来指定版本信息"></a>通过媒体类型来指定版本信息</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Accept: application/vnd.example.com.v1+json<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>其中 <code>vnd</code> 表示 <code>Standards Tree</code> 标准树类型，有三个不同的树: <code>x</code>，<code>prs</code> 和 <code>vnd</code>。你使用的标准树需要取决于你开发的项目</p>
+<ul>
+<li>未注册的树（<code>x</code>）主要表示本地和私有环境</li>
+<li>私有树（<code>prs</code>）主要表示没有商业发布的项目</li>
+<li>供应商树（<code>vnd</code>）主要表示公开发布的项目</li>
+</ul>
+<blockquote>
+<p>后面几个参数依次为应用名称（一般为应用域名）、版本号、期望的返回格式。</p>
+</blockquote>
+<p>至于具体把版本号放在什么地方，这个问题一直存在很大的争议，但由于我们大多数时间都在使用 <code>Laravel</code> 开发，<code>应该</code> 使用 <a target="_blank" rel="noopener" href="https://github.com/dingo/api">dingo/api</a> 来快速构建应用，它采用第二种方式来管理 <code>API</code> 版本，并且已集成了标准的 <code>HTTP Response</code>。</p>
+<h2 id="Endpoints"><a href="#Endpoints" class="headerlink" title="Endpoints"></a>Endpoints</h2><p>端点就是指向特定资源或资源集合的 <code>URL</code>。在端点的设计中，你 <code>必须</code> 遵守下列约定：</p>
+<ul>
+<li>URL 的命名 <code>必须</code> 全部小写</li>
+<li>URL 中资源（<code>resource</code>）的命名 <code>必须</code> 是名词，并且 <code>必须</code> 是复数形式</li>
+<li><code>必须</code> 优先使用 <code>Restful</code> 类型的 URL</li>
+<li>URL 中不能出现 <code>-</code>，<code>必须</code> 用下划线 <code>_</code> 代替</li>
+<li>URL <code>必须</code> 是易读的</li>
+<li>URL <code>一定不可</code> 暴露服务器架构</li>
+</ul>
+<p>来看一个反例</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://api.example.com/getUserInfo?userid=1">https://api.example.com/getUserInfo?userid=1</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.example.com/getusers">https://api.example.com/getusers</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.example.com/sv/u">https://api.example.com/sv/u</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.example.com/cgi-bin/users/get_user.php?userid=1">https://api.example.com/cgi-bin/users/get_user.php?userid=1</a></li>
+</ul>
+<p>再来看一个正列</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://api.example.com/zoos">https://api.example.com/zoos</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.example.com/animals">https://api.example.com/animals</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.example.com/zoos/%7Bzoo%7D/animals">https://api.example.com/zoos/{zoo}/animals</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.example.com/animal_types">https://api.example.com/animal_types</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.example.com/employees">https://api.example.com/employees</a></li>
+</ul>
+<h2 id="HTTP-动词"><a href="#HTTP-动词" class="headerlink" title="HTTP 动词"></a>HTTP 动词</h2><p>对于资源的具体操作类型，由 <code>HTTP</code> 动词表示。常用的 <code>HTTP</code> 动词有下面五个（括号里是对应的 <code>SQL</code> 命令）。</p>
+<ul>
+<li>GET（SELECT）：从服务器取出资源（一项或多项）。</li>
+<li>POST（CREATE）：在服务器新建一个资源。</li>
+<li>PUT（UPDATE）：在服务器更新资源（客户端提供改变后的完整资源）。</li>
+<li>PATCH（UPDATE）：在服务器更新资源（客户端提供改变的属性）。</li>
+<li>DELETE（DELETE）：从服务器删除资源。</li>
+</ul>
+<p>其中</p>
+<p>1 删除资源 <code>必须</code> 用 <code>DELETE</code> 方法<br>2 创建新的资源 <code>必须</code> 使用 <code>POST</code> 方法<br>3 更新资源 <code>应该</code> 使用 <code>PUT</code> 方法<br>4 获取资源信息 <code>必须</code> 使用 <code>GET</code> 方法</p>
+<p>针对每一个端点来说，下面列出所有可行的 <code>HTTP</code> 动词和端点的组合</p>
+<table>
+<thead>
+<tr>
+<th>请求方法</th>
+<th>URL</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td>/zoos</td>
+<td>列出所有的动物园(ID和名称，不要太详细)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/zoos</td>
+<td>新增一个新的动物园</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/zoos/{zoo}</td>
+<td>获取指定动物园详情</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/zoos/{zoo}</td>
+<td>更新指定动物园(整个对象)</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>/zoos/{zoo}</td>
+<td>更新动物园(部分对象)</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/zoos/{zoo}</td>
+<td>删除指定动物园</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/zoos/{zoo}/animals</td>
+<td>检索指定动物园下的动物列表(ID和名称，不要太详细)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/animals</td>
+<td>列出所有动物(ID和名称)。</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/animals</td>
+<td>新增新的动物</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/animals/{animal}</td>
+<td>获取指定的动物详情</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/animals/{animal}</td>
+<td>更新指定的动物(整个对象)</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>/animals/{animal}</td>
+<td>更新指定的动物(部分对象)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/animal_types</td>
+<td>获取所有动物类型(ID和名称，不要太详细)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/animal_types/{type}</td>
+<td>获取指定的动物类型详情</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/employees</td>
+<td>检索整个雇员列表</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/employees/{employee}</td>
+<td>检索指定特定的员工</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/zoos/{zoo}/employees</td>
+<td>检索在这个动物园工作的雇员的名单(身份证和姓名)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/employees</td>
+<td>新增指定新员工</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/zoos/{zoo}/employees</td>
+<td>在特定的动物园雇佣一名员工</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/zoos/{zoo}/employees/{employee}</td>
+<td>从某个动物园解雇一名员工</td>
+</tr>
+</tbody></table>
+<h2 id="Filtering"><a href="#Filtering" class="headerlink" title="Filtering"></a>Filtering</h2><blockquote>
+<p>如果记录数量很多，服务器不可能都将它们返回给用户。API <code>应该</code> 提供参数，过滤返回结果。下面是一些常见的参数。</p>
+</blockquote>
+<ul>
+<li>?limit=10：指定返回记录的数量</li>
+<li>?offset=10：指定返回记录的开始位置。</li>
+<li>?page=2&amp;per_page=100：指定第几页，以及每页的记录数。</li>
+<li>?sortby=name&amp;order=asc：指定返回结果按照哪个属性排序，以及排序顺序。</li>
+<li>?animal_type_id=1：指定筛选条件</li>
+</ul>
+<p>所有 <code>URL</code> 参数 <code>必须</code> 是全小写，<code>必须</code> 使用下划线类型的参数形式。</p>
+<p>经常使用的、复杂的查询 <code>应该</code> 标签化，降低维护成本。如</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">GET /trades?status<span class="token operator">=</span>closed<span class="token operator">&amp;</span><span class="token assign-left variable">sort</span><span class="token operator">=</span>sortby<span class="token operator">=</span>name<span class="token operator">&amp;</span><span class="token assign-left variable">order</span><span class="token operator">=</span>asc
+
+<span class="token comment"># 可为其定制快捷方式</span>
+GET /trades/recently_closed<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Authentication"><a href="#Authentication" class="headerlink" title="Authentication"></a>Authentication</h2><p><code>应该</code> 使用 <code>OAuth2.0</code> 的方式为 API 调用者提供登录认证。<code>必须</code> 先通过登录接口获取 <code>Access Token</code> 后再通过该 <code>token</code> 调用需要身份认证的 <code>API</code>。</p>
+<p>Oauth 的端点设计示列</p>
+<ul>
+<li>RFC 6749   /token</li>
+<li>Twitter    /oauth2/token</li>
+<li>Fackbook   /oauth/access_token</li>
+<li>Google     /o/oauth2/token</li>
+<li>Github     /login/oauth/access_token</li>
+<li>Instagram  /oauth/authorize</li>
+</ul>
+<p>客户端在获得 <code>access token</code> 的同时 <code>必须</code> 在响应中包含一个名为 <code>expires_in</code> 的数据，它表示当前获得的 <code>token</code> 会在多少 <code>秒</code> 后失效。</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"access_token"</span><span class="token operator">:</span> <span class="token string">"token...."</span><span class="token punctuation">,</span>
+    <span class="token property">"token_type"</span><span class="token operator">:</span> <span class="token string">"Bearer"</span><span class="token punctuation">,</span>
+    <span class="token property">"expires_in"</span><span class="token operator">:</span> <span class="token number">3600</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>客户端在请求需要认证的 <code>API</code> 时，<code>必须</code> 在请求头 <code>Authorization</code> 中带上 <code>access_token</code>。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Authorization: Bearer token<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>当超过指定的秒数后，<code>access token</code> 就会过期，再次用过期/或无效的 <code>token</code> 访问时，服务端 <code>应该</code> 返回 <code>invalid_token</code> 的错误或 <code>401</code> 错误码。</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">401</span> <span class="token reason-phrase string">Unauthorized</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-store</span></span>
+<span class="token header"><span class="token header-name keyword">Pragma</span><span class="token punctuation">:</span> <span class="token header-value">no-cache</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span>
+    <span class="token property">"error"</span><span class="token operator">:</span> <span class="token string">"invalid_token"</span>
+<span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>Laravel 开发中，<code>应该</code> 使用 <a target="_blank" rel="noopener" href="https://github.com/tymondesigns/jwt-auth">JWT</a> 来为管理你的 Token，并且 <code>一定不可</code> 在 <code>api</code> 中间件中开启请求 <code>session</code>。</p>
+</blockquote>
+<h2 id="Response"><a href="#Response" class="headerlink" title="Response"></a>Response</h2><p>所有的 <code>API</code> 响应，<code>必须</code> 遵守 <code>HTTP</code> 设计规范，<code>必须</code> 选择合适的 <code>HTTP</code> 状态码。<code>一定不可</code> 所有接口都返回状态码为 <code>200</code> 的 <code>HTTP</code> 响应，如：</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">200</span> <span class="token reason-phrase string">ok</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">example.com</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span>
+    <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"msg"</span><span class="token operator">:</span> <span class="token string">"success"</span><span class="token punctuation">,</span>
+    <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"username"</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>或</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">200</span> <span class="token reason-phrase string">ok</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">example.com</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span>
+    <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">-1</span><span class="token punctuation">,</span>
+    <span class="token property">"msg"</span><span class="token operator">:</span> <span class="token string">"该活动不存在"</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>下表列举了常见的 <code>HTTP</code> 状态码</p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1xx</td>
+<td>代表请求已被接受，需要继续处理</td>
+</tr>
+<tr>
+<td>2xx</td>
+<td>请求已成功，请求所希望的响应头或数据体将随此响应返回</td>
+</tr>
+<tr>
+<td>3xx</td>
+<td>重定向</td>
+</tr>
+<tr>
+<td>4xx</td>
+<td>客户端原因引起的错误</td>
+</tr>
+<tr>
+<td>5xx</td>
+<td>服务端原因引起的错误</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>只有来自客户端的请求被正确的处理后才能返回 <code>2xx</code> 的响应，所以当 API 返回 <code>2xx</code> 类型的状态码时，前端 <code>必须</code> 认定该请求已处理成功。</p>
+</blockquote>
+<p>必须强调的是，所有 <code>API</code> <code>一定不可</code> 返回 <code>1xx</code> 类型的状态码。当 <code>API</code> 发生错误时，<code>必须</code> 返回出错时的详细信息。目前常见返回错误信息的方法有两种：</p>
+<p>1、将错误详细放入 <code>HTTP</code> 响应首部；</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token header"><span class="token header-name keyword">X-MYNAME-ERROR-CODE</span><span class="token punctuation">:</span> <span class="token header-value">4001</span></span>
+<span class="token header"><span class="token header-name keyword">X-MYNAME-ERROR-MESSAGE</span><span class="token punctuation">:</span> <span class="token header-value">Bad authentication token</span></span>
+<span class="token header"><span class="token header-name keyword">X-MYNAME-ERROR-INFO</span><span class="token punctuation">:</span> <span class="token header-value">http://docs.example.com/api/v1/authentication</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>2、直接放入响应实体中；</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">401</span> <span class="token reason-phrase string">Unauthorized</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 10:02:59 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span><span class="token property">"error_code"</span><span class="token operator">:</span><span class="token number">40100</span><span class="token punctuation">,</span><span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"Unauthorized"</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>考虑到易读性和客户端的易处理性，我们 <code>必须</code> 把错误信息直接放到响应实体中，并且错误格式 <code>应该</code> 满足如下格式：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"message"</span><span class="token operator">:</span> <span class="token string">"您查找的资源不存在"</span><span class="token punctuation">,</span>
+    <span class="token property">"error_code"</span><span class="token operator">:</span> <span class="token number">404001</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其中错误码（<code>error_code</code>）<code>必须</code> 和 <code>HTTP</code> 状态码对应，也方便错误码归类，如：</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">429</span> <span class="token reason-phrase string">Too Many Requests</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 10:15:52 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span><span class="token property">"error_code"</span><span class="token operator">:</span><span class="token number">429001</span><span class="token punctuation">,</span><span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"你操作太频繁了"</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">403</span> <span class="token reason-phrase string">Forbidden</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 10:19:27 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span><span class="token property">"error_code"</span><span class="token operator">:</span><span class="token number">403002</span><span class="token punctuation">,</span><span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"用户已禁用"</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>应该</code> 在返回的错误信息中，同时包含面向开发者和面向用户的提示信息，前者可方便开发人员调试，后者可直接展示给终端用户查看如：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"message"</span><span class="token operator">:</span> <span class="token string">"直接展示给终端用户的错误信息"</span><span class="token punctuation">,</span>
+    <span class="token property">"error_code"</span><span class="token operator">:</span> <span class="token string">"业务错误码"</span><span class="token punctuation">,</span>
+    <span class="token property">"error"</span><span class="token operator">:</span> <span class="token string">"供开发者查看的错误信息"</span><span class="token punctuation">,</span>
+    <span class="token property">"debug"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"错误堆栈，必须开启 debug 才存在"</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>下面详细列举了各种情况 API 的返回说明。</p>
+<h3 id="200-ok"><a href="#200-ok" class="headerlink" title="200 ok"></a>200 ok</h3><p><code>200</code> 状态码是最常见的 <code>HTTP</code> 状态码，在所有 <strong>成功</strong> 的 <code>GET</code> 请求中，<code>必须</code> 返回此状态码。<code>HTTP</code> 响应实体部分 <code>必须</code> 直接就是数据，不要做多余的包装。</p>
+<p>错误示例：</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">200</span> <span class="token reason-phrase string">ok</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">example.com</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span>
+    <span class="token property">"user"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"id"</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span>
+        <span class="token property">"nickname"</span><span class="token operator">:</span><span class="token string">"fwest"</span><span class="token punctuation">,</span>
+        <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"example"</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>正确示例：</p>
+<p>1、获取单个资源详情</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"godruoyi"</span><span class="token punctuation">,</span>
+    <span class="token property">"age"</span><span class="token operator">:</span> <span class="token number">88</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>2、获取资源集合</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+        <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"godruoyi"</span><span class="token punctuation">,</span>
+        <span class="token property">"age"</span><span class="token operator">:</span> <span class="token number">88</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+        <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"foo"</span><span class="token punctuation">,</span>
+        <span class="token property">"age"</span><span class="token operator">:</span> <span class="token number">88</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>3、额外的媒体信息</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+            <span class="token property">"avatar"</span><span class="token operator">:</span> <span class="token string">"https://lorempixel.com/640/480/?32556"</span><span class="token punctuation">,</span>
+            <span class="token property">"nickname"</span><span class="token operator">:</span> <span class="token string">"fwest"</span><span class="token punctuation">,</span>
+            <span class="token property">"last_logined_time"</span><span class="token operator">:</span> <span class="token string">"2018-05-29 04:56:43"</span><span class="token punctuation">,</span>
+            <span class="token property">"has_registed"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+            <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+            <span class="token property">"avatar"</span><span class="token operator">:</span> <span class="token string">"https://lorempixel.com/640/480/?86144"</span><span class="token punctuation">,</span>
+            <span class="token property">"nickname"</span><span class="token operator">:</span> <span class="token string">"zschowalter"</span><span class="token punctuation">,</span>
+            <span class="token property">"last_logined_time"</span><span class="token operator">:</span> <span class="token string">"2018-06-16 15:18:34"</span><span class="token punctuation">,</span>
+            <span class="token property">"has_registed"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"meta"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"pagination"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"total"</span><span class="token operator">:</span> <span class="token number">101</span><span class="token punctuation">,</span>
+            <span class="token property">"count"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+            <span class="token property">"per_page"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+            <span class="token property">"current_page"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+            <span class="token property">"total_pages"</span><span class="token operator">:</span> <span class="token number">51</span><span class="token punctuation">,</span>
+            <span class="token property">"links"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+                <span class="token property">"next"</span><span class="token operator">:</span> <span class="token string">"http://api.example.com?page=2"</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>其中，分页和其他额外的媒体信息，必须放到 <code>meta</code> 字段中。</p>
+</blockquote>
+<h3 id="201-Created"><a href="#201-Created" class="headerlink" title="201 Created"></a>201 Created</h3><p>当服务器创建数据成功时，<code>应该</code> 返回此状态码。常见的应用场景是使用 <code>POST</code> 提交用户信息，如：</p>
+<ul>
+<li>添加了新用户</li>
+<li>上传了图片</li>
+<li>创建了新活动</li>
+</ul>
+<p>等，都可以返回 <code>201</code> 状态码。需要注意的是，你可以选择在用户创建成功后返回新用户的数据</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">201</span> <span class="token reason-phrase string">Created</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 09:13:40 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token property">"avatar"</span><span class="token operator">:</span> <span class="token string">"https:\/\/lorempixel.com\/640\/480\/?32556"</span><span class="token punctuation">,</span>
+    <span class="token property">"nickname"</span><span class="token operator">:</span> <span class="token string">"fwest"</span><span class="token punctuation">,</span>
+    <span class="token property">"last_logined_time"</span><span class="token operator">:</span> <span class="token string">"2018-05-29 04:56:43"</span><span class="token punctuation">,</span>
+    <span class="token property">"created_at"</span><span class="token operator">:</span> <span class="token string">"2018-06-16 17:55:55"</span><span class="token punctuation">,</span>
+    <span class="token property">"updated_at"</span><span class="token operator">:</span> <span class="token string">"2018-06-16 17:55:55"</span>
+<span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>也可以返回一个响应实体为空的 <code>HTTP Response</code> 如：</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">201</span> <span class="token reason-phrase string">Created</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">text/html; charset=UTF-8</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 09:12:20 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>这里我们 <code>应该</code> 采用第二种方式，因为大多数情况下，客户端只需要知道该请求操作成功与否，并不需要返回新资源的信息。</p>
+</blockquote>
+<h3 id="202-Accepted"><a href="#202-Accepted" class="headerlink" title="202 Accepted"></a>202 Accepted</h3><p>该状态码表示服务器已经接受到了来自客户端的请求，但还未开始处理。常用短信发送、邮件通知、模板消息推送等这类很耗时需要队列支持的场景中；</p>
+<blockquote>
+<p>返回该状态码时，响应实体 <code>必须</code> 为空。</p>
+</blockquote>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">HTTP/1.1 202 Accepted
+Server: nginx/1.11.9
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Date: Sun, 24 Jun 2018 09:25:15 GMT
+Connection: keep-alive<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="204-No-Content"><a href="#204-No-Content" class="headerlink" title="204 No Content"></a>204 No Content</h3><p>该状态码表示响应实体不包含任何数据，其中：</p>
+<ul>
+<li>在使用 <code>DELETE</code> 方法删除资源 <strong>成功</strong> 时，<code>必须</code> 返回该状态码</li>
+<li>使用 <code>PUT</code>、<code>PATCH</code> 方法更新数据 <strong>成功</strong> 时，也 <code>应该</code> 返回此状态码</li>
+</ul>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">204</span> <span class="token reason-phrase string">No Content</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 09:29:12 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="3xx-重定向"><a href="#3xx-重定向" class="headerlink" title="3xx 重定向"></a>3xx 重定向</h3><p>所有 <code>API</code> <code>一定不可</code> 返回 <code>3xx</code> 类型的状态码。因为 <code>3xx</code> 类型的响应格式一般为下列格式：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">HTTP/1.1 302 Found
+Server: nginx/1.11.9
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Cache-Control: no-cache, private
+Date: Sun, 24 Jun 2018 09:41:50 GMT
+Location: https://example.com
+Connection: keep-alive
+
+<span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">DOCTYPE</span> <span class="token name">html</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UTF-8<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">http-equiv</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>refresh<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>0;url=https://example.com<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">&gt;</span></span>Redirecting to https://example.com<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">&gt;</span></span>
+        Redirecting to <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://example.com<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>https://example.com<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>.
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>API</code> <code>一定不可</code> 返回纯 <code>HTML</code> 结构的响应；若一定要使用重定向功能，<code>应该</code> 返回一个响应实体为空的 <code>3xx</code> 响应，并在响应头中加上 <code>Location</code> 字段:</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">302</span> <span class="token reason-phrase string">Found</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">text/html; charset=UTF-8</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 09:52:50 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Location</span><span class="token punctuation">:</span> <span class="token header-value">https://godruoyi.com</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="400-Bad-Request"><a href="#400-Bad-Request" class="headerlink" title="400 Bad Request"></a>400 Bad Request</h3><p>由于明显的客户端错误（例如，请求语法格式错误、无效的请求、无效的签名等），服务器 <code>应该</code> 放弃该请求。</p>
+<blockquote>
+<p>当服务器无法从其他 4xx 类型的状态码中找出合适的来表示错误类型时，都 <code>必须</code> 返回该状态码。</p>
+</blockquote>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">400</span> <span class="token reason-phrase string">Bad Request</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 13:22:36 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span><span class="token property">"error_code"</span><span class="token operator">:</span><span class="token number">40000</span><span class="token punctuation">,</span><span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"无效的签名"</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="401-Unauthorized"><a href="#401-Unauthorized" class="headerlink" title="401 Unauthorized"></a>401 Unauthorized</h3><p>该状态码表示当前请求需要身份认证，以下情况都 <code>必须</code> 返回该状态码。</p>
+<ul>
+<li>未认证用户访问需要认证的 API</li>
+<li>access_token 无效/过期</li>
+</ul>
+<blockquote>
+<p>客户端在收到 <code>401</code> 响应后，都 <code>应该</code> 提示用户进行下一步的登录操作。</p>
+</blockquote>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">401</span> <span class="token reason-phrase string">Unauthorized</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">WWW-Authenticate</span><span class="token punctuation">:</span> <span class="token header-value">JWTAuth</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 13:17:02 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"Token Signature could not be verified."</span><span class="token punctuation">,</span><span class="token property">"error_code"</span><span class="token operator">:</span> <span class="token string">"40100"</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="403-Forbidden"><a href="#403-Forbidden" class="headerlink" title="403 Forbidden"></a>403 Forbidden</h3><p>该状态码可以简单的理解为没有权限访问该请求，服务器收到请求但拒绝提供服务。</p>
+<p>如当普通用户请求操作管理员用户时，<code>必须</code> 返回该状态码。</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">403</span> <span class="token reason-phrase string">Forbidden</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 13:05:34 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span><span class="token property">"error_code"</span><span class="token operator">:</span><span class="token number">40301</span><span class="token punctuation">,</span><span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"权限不足"</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="404-Not-Found"><a href="#404-Not-Found" class="headerlink" title="404 Not Found"></a>404 Not Found</h3><p>该状态码表示用户请求的资源不存在，如</p>
+<ul>
+<li>获取不存在的用户信息 （get /users/9999999）</li>
+<li>访问不存在的端点</li>
+</ul>
+<p>都 <code>必须</code> 返回该状态码，若该资源已永久不存在，则 <code>应该</code> 返回 <code>401</code> 响应。</p>
+<h3 id="405-Method-Not-Allowd"><a href="#405-Method-Not-Allowd" class="headerlink" title="405 Method Not Allowd"></a>405 Method Not Allowd</h3><p>当客户端使用的 <code>HTTP</code> 请求方法不被服务器允许时，<code>必须</code> 返回该状态码。</p>
+<blockquote>
+<p>如客户端调用了 <code>POST</code> 方法来访问只支持 GET 方法的 API</p>
+</blockquote>
+<p>该响应 <code>必须</code> 返回一个 <code>Allow</code> 头信息用以表示出当前资源能够接受的请求方法的列表。</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">405</span> <span class="token reason-phrase string">Method Not Allowed</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Allow</span><span class="token punctuation">:</span> <span class="token header-value">GET, HEAD</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 12:30:57 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span><span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"405 Method Not Allowed"</span><span class="token punctuation">,</span><span class="token property">"error_code"</span><span class="token operator">:</span> <span class="token number">40500</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="406-Not-Acceptable"><a href="#406-Not-Acceptable" class="headerlink" title="406 Not Acceptable"></a>406 Not Acceptable</h3><p><code>API</code> 在不支持客户端指定的数据格式时，应该返回此状态码。如支持 <code>JSON</code> 和 <code>XML</code> 输出的 <code>API</code> 被指定返回 <code>YAML</code> 格式的数据时。</p>
+<blockquote>
+<p>Http 协议一般通过请求首部的 Accept 来指定数据格式</p>
+</blockquote>
+<h3 id="408-Request-Timeout"><a href="#408-Request-Timeout" class="headerlink" title="408 Request Timeout"></a>408 Request Timeout</h3><p>客户端请求超时时 <code>必须</code> 返回该状态码，需要注意的时，该状态码表示 <strong>客户端请求超时</strong>，在涉及第三方 <code>API</code> 调用超时时，<code>一定不可</code> 返回该状态码。</p>
+<h3 id="409-Gonfilct"><a href="#409-Gonfilct" class="headerlink" title="409 Gonfilct"></a>409 Gonfilct</h3><p>该状态码表示因为请求存在冲突无法处理。如通过手机号码提供注册功能的 <code>API</code>，当用户提交的手机号已存在时，<code>必须</code> 返回此状态码。</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">409</span> <span class="token reason-phrase string">Gonfilct</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 12:19:04 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span><span class="token property">"error_code"</span><span class="token operator">:</span><span class="token number">40900</span><span class="token punctuation">,</span><span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"手机号已存在"</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="410-Gone"><a href="#410-Gone" class="headerlink" title="410 Gone"></a>410 Gone</h3><p>和 <code>404</code> 类似，该状态码也表示请求的资源不存在，只是 <code>410</code> 状态码进一步表示所请求的资源已不存在，并且未来也不会存在。在收到 <code>410</code> 状态码后，客户端 <code>应该</code> 停止再次请求该资源。</p>
+<h3 id="413-Request-Entity-Too-Large"><a href="#413-Request-Entity-Too-Large" class="headerlink" title="413 Request Entity Too Large"></a>413 Request Entity Too Large</h3><p>该状态码表示服务器拒绝处理当前请求，因为该请求提交的实体数据大小超过了服务器愿意或者能够处理的范围。</p>
+<blockquote>
+<p>此种情况下，服务器可以关闭连接以免客户端继续发送此请求。</p>
+</blockquote>
+<p>如果这个状况是临时的，服务器 <code>应该</code> 返回一个 <code>Retry-After</code> 的响应头，以告知客户端可以在多少时间以后重新尝试。</p>
+<h3 id="414-Request-URI-Too-Long"><a href="#414-Request-URI-Too-Long" class="headerlink" title="414 Request-URI Too Long"></a>414 Request-URI Too Long</h3><p>该状态码表示请求的 <code>URI</code> 长度超过了服务器能够解释的长度，因此服务器拒绝对该请求提供服务。</p>
+<h3 id="415-Unsupported-Media-Type"><a href="#415-Unsupported-Media-Type" class="headerlink" title="415 Unsupported Media Type"></a>415 Unsupported Media Type</h3><p>通常表示服务器不支持客户端请求首部 <code>Content-Type</code> 指定的数据格式。如在只接受 <code>JSON</code> 格式的 <code>API</code> 中放入 <code>XML</code> 类型的数据并向服务器发送，都 <code>应该</code> 返回该状态码。</p>
+<p>该状态码也可用于如：只允许上传图片格式的文件，但是客户端提交媒体文件非法或不是图片类型，这时 <code>应该</code> 返回该状态码：</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">415</span> <span class="token reason-phrase string">Unsupported Media Type</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 12:09:40 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span><span class="token property">"error_code"</span><span class="token operator">:</span><span class="token number">41500</span><span class="token punctuation">,</span><span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"不允许上传的图片格式"</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="429-Too-Many-Request"><a href="#429-Too-Many-Request" class="headerlink" title="429 Too Many Request"></a>429 Too Many Request</h3><p>该状态码表示用户请求次数超过允许范围。如 <code>API</code> 设定为 <code>60次/分钟</code>，当用户在一分钟内请求次数超过 60 次后，都 <code>应该</code> 返回该状态码。并且也 <code>应该</code> 在响应首部中加上下列头部：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">X-RateLimit-Limit: <span class="token number">10</span> 请求速率（由应用设定，其单位一般为小时/分钟等，这里是 <span class="token number">10</span>次/5分钟）
+X-RateLimit-Remaining: <span class="token number">0</span> 当前剩余的请求数量
+X-RateLimit-Reset: <span class="token number">1529839462</span> 重置时间
+Retry-After: <span class="token number">120</span> 下一次访问应该等待的时间（秒）<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>列子</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">429</span> <span class="token reason-phrase string">Too Many Requests</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">X-RateLimit-Limit</span><span class="token punctuation">:</span> <span class="token header-value">10</span></span>
+<span class="token header"><span class="token header-name keyword">X-RateLimit-Remaining</span><span class="token punctuation">:</span> <span class="token header-value">0</span></span>
+<span class="token header"><span class="token header-name keyword">X-RateLimit-Reset</span><span class="token punctuation">:</span> <span class="token header-value">1529839462</span></span>
+<span class="token header"><span class="token header-name keyword">Retry-After</span><span class="token punctuation">:</span> <span class="token header-value">290</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 11:19:32 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span><span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"You have exceeded your rate limit."</span><span class="token punctuation">,</span><span class="token property">"error_code"</span><span class="token operator">:</span><span class="token number">42900</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>必须</code> 为所有的 API 设置 Rate Limit 支持。</p>
+<h3 id="500-Internal-Server-Error"><a href="#500-Internal-Server-Error" class="headerlink" title="500 Internal Server Error"></a>500 Internal Server Error</h3><p>该状态码 <code>必须</code> 在服务器出错时抛出，对于所有的 <code>500</code> 错误，都 <code>应该</code> 提供完整的错误信息支持，也方便跟踪调试。</p>
+<h3 id="503-Service-Unavailable"><a href="#503-Service-Unavailable" class="headerlink" title="503 Service Unavailable"></a>503 Service Unavailable</h3><p>该状态码表示服务器暂时处理不可用状态，当服务器需要维护或第三方 <code>API</code> 请求超时/不可达时，都 <code>应该</code> 返回该状态码，其中若是主动关闭 API 服务，<code>应该 </code>在返回的响应首部加上 <code>Retry-After</code> 头部，表示多少秒后可以再次访问。</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">503</span> <span class="token reason-phrase string">Service Unavailable</span></span>
+<span class="token header"><span class="token header-name keyword">Server</span><span class="token punctuation">:</span> <span class="token header-value">nginx/1.11.9</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
+<span class="token header"><span class="token header-name keyword">Transfer-Encoding</span><span class="token punctuation">:</span> <span class="token header-value">chunked</span></span>
+<span class="token header"><span class="token header-name keyword">Cache-Control</span><span class="token punctuation">:</span> <span class="token header-value">no-cache, private</span></span>
+<span class="token header"><span class="token header-name keyword">Date</span><span class="token punctuation">:</span> <span class="token header-value">Sun, 24 Jun 2018 10:56:20 GMT</span></span>
+<span class="token header"><span class="token header-name keyword">Retry-After</span><span class="token punctuation">:</span> <span class="token header-value">60</span></span>
+<span class="token header"><span class="token header-name keyword">Connection</span><span class="token punctuation">:</span> <span class="token header-value">keep-alive</span></span>
+<span class="token application-json">
+<span class="token punctuation">{</span><span class="token property">"error_code"</span><span class="token operator">:</span><span class="token number">50300</span><span class="token punctuation">,</span><span class="token property">"message"</span><span class="token operator">:</span><span class="token string">"服务维护中"</span><span class="token punctuation">}</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其他 <code>HTTP</code> 状态码请参考 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-hans/HTTP%E7%8A%B6%E6%80%81%E7%A0%81">HTTP 状态码- 维基百科</a>。</p>
+<h2 id="建议参考"><a href="#建议参考" class="headerlink" title="建议参考"></a>建议参考</h2><p><a target="_blank" rel="noopener" href="https://github.com/aisuhua/restful-api-design-references">restful-api-design-references</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/moonz-wu/p/4211626.html">Principles of good RESTful API Design（译）</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2011/09/restful.html">理解 RESTful 架构</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html">RESTful API 设计指南</a></p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-hans/HTTP%E7%8A%B6%E6%80%81%E7%A0%81">HTTP 状态码- 维基百科</a></p>
+<p>本文内容转载于：<a target="_blank" rel="noopener" href="https://learnku.com/articles/13631/resetful-api-design-specification">RESTful API 设计规范
+</a></p>
+
+            </div>
+            <div class="top-div">
+              <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E5%85%B3%E4%BA%8E%E3%80%8C%E8%83%BD%E6%84%BF%E5%8A%A8%E8%AF%8D%E3%80%8D%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="top-box-text">关于「能愿动词」的使用</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E5%8D%8F%E8%AE%AE"><span class="top-box-text">协议</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#API-Root-URL"><span class="top-box-text">API Root URL</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Versioning"><span class="top-box-text">Versioning</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#%E5%9C%A8-URL-%E4%B8%AD%E5%B5%8C%E5%85%A5%E7%89%88%E6%9C%AC%E7%BC%96%E5%8F%B7"><span class="top-box-text">在 URL 中嵌入版本编号</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#%E9%80%9A%E8%BF%87%E5%AA%92%E4%BD%93%E7%B1%BB%E5%9E%8B%E6%9D%A5%E6%8C%87%E5%AE%9A%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="top-box-text">通过媒体类型来指定版本信息</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Endpoints"><span class="top-box-text">Endpoints</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#HTTP-%E5%8A%A8%E8%AF%8D"><span class="top-box-text">HTTP 动词</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Filtering"><span class="top-box-text">Filtering</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Authentication"><span class="top-box-text">Authentication</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Response"><span class="top-box-text">Response</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#200-ok"><span class="top-box-text">200 ok</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#201-Created"><span class="top-box-text">201 Created</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#202-Accepted"><span class="top-box-text">202 Accepted</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#204-No-Content"><span class="top-box-text">204 No Content</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#3xx-%E9%87%8D%E5%AE%9A%E5%90%91"><span class="top-box-text">3xx 重定向</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#400-Bad-Request"><span class="top-box-text">400 Bad Request</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#401-Unauthorized"><span class="top-box-text">401 Unauthorized</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#403-Forbidden"><span class="top-box-text">403 Forbidden</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#404-Not-Found"><span class="top-box-text">404 Not Found</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#405-Method-Not-Allowd"><span class="top-box-text">405 Method Not Allowd</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#406-Not-Acceptable"><span class="top-box-text">406 Not Acceptable</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#408-Request-Timeout"><span class="top-box-text">408 Request Timeout</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#409-Gonfilct"><span class="top-box-text">409 Gonfilct</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#410-Gone"><span class="top-box-text">410 Gone</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#413-Request-Entity-Too-Large"><span class="top-box-text">413 Request Entity Too Large</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#414-Request-URI-Too-Long"><span class="top-box-text">414 Request-URI Too Long</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#415-Unsupported-Media-Type"><span class="top-box-text">415 Unsupported Media Type</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#429-Too-Many-Request"><span class="top-box-text">429 Too Many Request</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#500-Internal-Server-Error"><span class="top-box-text">500 Internal Server Error</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#503-Service-Unavailable"><span class="top-box-text">503 Service Unavailable</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E5%BB%BA%E8%AE%AE%E5%8F%82%E8%80%83"><span class="top-box-text">建议参考</span></a></li></ol>
+            </div>
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="/2022/08/08/expression-1-of-select-list-is-not-in-group-by-clause-and-contains-nonaggregated-column/">
+              <h3 class="post-title">
+                下一篇：Expression 1 of SELECT list is not in GROUP BY clause and contains nonaggregated column
+              </h3>
+            </a>
+          </div>
+        
+      </div>
+
+    
+
+
+      <footer>
+<div class="site-footer">
+  <div class="social-container">
+    <!-- 
+      
+        <a href="https://github.com/f-dong" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+     -->
+  </div>
+  <!-- 
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+   -->
+</div>
+</footer>
+
+
+    </div>
+    
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+  </body>
+</html>
