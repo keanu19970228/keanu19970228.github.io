@@ -6,7 +6,7 @@
   <link href="http://keanu19970228.github.io/atom.xml" rel="self"/>
   
   <link href="http://keanu19970228.github.io/"/>
-  <updated>2022-08-10T09:23:56.200Z</updated>
+  <updated>2022-08-11T07:10:56.593Z</updated>
   <id>http://keanu19970228.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>supervisor</title>
+    <link href="http://keanu19970228.github.io/2022/08/11/supervisor/"/>
+    <id>http://keanu19970228.github.io/2022/08/11/supervisor/</id>
+    <published>2022-08-11T07:06:58.000Z</published>
+    <updated>2022-08-11T07:10:56.593Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;在开发过程中，每次修改代码保存后，我们都需要手动重启程序，才能查看改动的效果。使用 &lt;a href=&quot;https://www.npmjs.com/package/supervisor&quot;&gt;supervisor&lt;/a&gt; 可以解决这个繁琐的问题，全局安装</summary>
+        
+      
+    
+    
+    
+    
+    <category term="node.js" scheme="http://keanu19970228.github.io/tags/node-js/"/>
+    
+  </entry>
   
   <entry>
     <title>RESTful API 设计规范</title>

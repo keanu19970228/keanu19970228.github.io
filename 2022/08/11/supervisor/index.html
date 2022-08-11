@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
@@ -5,9 +6,11 @@
 
 <meta charset="utf-8" >
 
-<title>LuCarlo</title>
-<meta name="keywords" content="LuCarlo, LuCarlo">
-<meta name="description" content="罗培森博客,blog,技术分享,Laravel,PHP,LuCarlo,个人网站,IT博客,程序员博客,日常记录,笔记">
+<title>supervisor</title>
+<meta name="keywords" content="supervisor, LuCarlo">
+<meta name="description" content="在开发过程中，每次修改代码保存后，我们都需要手动重启程序，才能查看改动的效果。使用 supervisor 可以解决这个繁琐的问题，全局安装 supervisor：
+npm install supervisor -g
+运行 superviso">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -76,65 +79,53 @@
 </div>
 
 
-        <div class="content-container">
+      <div class="content-container">
+        <div class="post-detail">
           
-          
+          <h2 class="post-title">supervisor</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-08-11</span>
+            
+              <span>
+              <i class="icon-pricetags-outline"></i>
+                
+                  <a href="/tags/node-js/">
+                  node.js
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content-wrapper">
+            <div class="post-content">
+              <p>在开发过程中，每次修改代码保存后，我们都需要手动重启程序，才能查看改动的效果。使用 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/supervisor">supervisor</a> 可以解决这个繁琐的问题，全局安装 supervisor：</p>
+<pre class="line-numbers language-none"><code class="language-none">npm install supervisor -g<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>运行 <code>supervisor index</code> 启动程序。</p>
+<p>supervisor 会监听当前目录下 node 和 js 后缀的文件，当这些文件发生改动时，supervisor 会自动重启程序。</p>
 
-<div class="archives-container">
-  
-    <h2 class="year">2022</h2>
-    
-      
-        <article class="post">
-          <a href="/2022/08/11/supervisor/">
-            <h2 class="post-title">
-              supervisor
-              <small style="color: gray;">2022-08-11</small>
-            </h2>
-          </a>
-        </article>
-      
-    
-      
-        <article class="post">
-          <a href="/2022/08/10/restful-api-she-ji-gui-fan/">
-            <h2 class="post-title">
-              RESTful API 设计规范
-              <small style="color: gray;">2022-08-10</small>
-            </h2>
-          </a>
-        </article>
-      
-    
-      
-        <article class="post">
-          <a href="/2022/08/08/expression-1-of-select-list-is-not-in-group-by-clause-and-contains-nonaggregated-column/">
-            <h2 class="post-title">
-              Expression 1 of SELECT list is not in GROUP BY clause and contains nonaggregated column
-              <small style="color: gray;">2022-08-08</small>
-            </h2>
-          </a>
-        </article>
-      
-    
-      
-        <article class="post">
-          <a href="/2022/08/04/node-js-wen-mo-zhui-jia/">
-            <h2 class="post-title">
-              node.js 文末追加
-              <small style="color: gray;">2022-08-04</small>
-            </h2>
-          </a>
-        </article>
-      
-    
-  
-</div>
-
-
+            </div>
+            <div class="top-div">
+              
+            </div>
+          </div>
         </div>
 
-        <footer>
+        
+          <div class="next-post">
+            <a class="purple-link" href="/2022/08/10/restful-api-she-ji-gui-fan/">
+              <h3 class="post-title">
+                下一篇：RESTful API 设计规范
+              </h3>
+            </a>
+          </div>
+        
+      </div>
+
+    
+
+
+      <footer>
 <div class="site-footer">
   <div class="social-container">
     <!-- 
@@ -165,8 +156,8 @@
 </footer>
 
 
-      </div>
-      
+    </div>
+    
     <script src="/js/jquery.min.js"></script>
     <script src="/js/jquery.fancybox.min.js"></script>
 
@@ -177,6 +168,5 @@
 
 
 
-    </div>
   </body>
 </html>
