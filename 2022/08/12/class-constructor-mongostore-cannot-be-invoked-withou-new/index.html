@@ -100,53 +100,53 @@ const Mongo">
           </div>
           <div class="post-content-wrapper">
             <div class="post-content">
-              <h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><pre class="line-numbers language-none"><code class="language-none">const path = require('path')
-const express = require('express')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
-const flash = require('connect-flash')
-const config = require('config-lite')(__dirname)
-const router = require('./routes')
-const pkg = require('./package')
-const routes = require('./routes')
+              <h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> path <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> express <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'express'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> session <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'express-session'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> MongoStore <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'connect-mongo'</span><span class="token punctuation">)</span><span class="token punctuation">(</span>session<span class="token punctuation">)</span>
+<span class="token keyword">const</span> flash <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'connect-flash'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> config <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'config-lite'</span><span class="token punctuation">)</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span>
+<span class="token keyword">const</span> router <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./routes'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> pkg <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./package'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> routes <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./routes'</span><span class="token punctuation">)</span>
 
-const app = express()
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-// 设置模板目录
-app.set('views', path.join(__dirname, 'views'))
-// 设置模板引擎为 ejs
-app.set('view engine', 'ejs')
+<span class="token comment">// 设置模板目录</span>
+app<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string">'views'</span><span class="token punctuation">,</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'views'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">// 设置模板引擎为 ejs</span>
+app<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string">'view engine'</span><span class="token punctuation">,</span> <span class="token string">'ejs'</span><span class="token punctuation">)</span>
 
-// 设置静态文件目录
-app.use(express.static(path.join(__dirname, 'public')))
-// session 中间件
-app.use(session({
-    name: config.session.key, //设置 cookie 中保存 session id 的字段名称
-    secret: config.session.secret, // 设置 secret 来计算 hash 值并放在 cookie 中，使产生的 signedCookie 防篡改
-    resave: true, // 强制更新 session
-    saveUninitialized: false, // 设置为 false，强制创建一个 session，即使用户未登录
-    cookie: {
-        maxAge: config.session.maxAge //过期时间，过期后 cookie 中的 session id 会自动删除
-    },
-    store: new MongoStore({ // 将 session 存储到 mongodb
-        url: config.mongodb // mongodb 地址
-    })
-}))
-// flash 中间件，用来显示通知
-app.use(flash())
+<span class="token comment">// 设置静态文件目录</span>
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>express<span class="token punctuation">.</span><span class="token function">static</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'public'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">// session 中间件</span>
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token function">session</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> config<span class="token punctuation">.</span>session<span class="token punctuation">.</span>key<span class="token punctuation">,</span> <span class="token comment">//设置 cookie 中保存 session id 的字段名称</span>
+    <span class="token literal-property property">secret</span><span class="token operator">:</span> config<span class="token punctuation">.</span>session<span class="token punctuation">.</span>secret<span class="token punctuation">,</span> <span class="token comment">// 设置 secret 来计算 hash 值并放在 cookie 中，使产生的 signedCookie 防篡改</span>
+    <span class="token literal-property property">resave</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token comment">// 强制更新 session</span>
+    <span class="token literal-property property">saveUninitialized</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token comment">// 设置为 false，强制创建一个 session，即使用户未登录</span>
+    <span class="token literal-property property">cookie</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">maxAge</span><span class="token operator">:</span> config<span class="token punctuation">.</span>session<span class="token punctuation">.</span>maxAge <span class="token comment">//过期时间，过期后 cookie 中的 session id 会自动删除</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">store</span><span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">MongoStore</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token comment">// 将 session 存储到 mongodb</span>
+        <span class="token literal-property property">url</span><span class="token operator">:</span> config<span class="token punctuation">.</span>mongodb <span class="token comment">// mongodb 地址</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">// flash 中间件，用来显示通知</span>
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token function">flash</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
 
-// 路由
-routes(app)
+<span class="token comment">// 路由</span>
+<span class="token function">routes</span><span class="token punctuation">(</span>app<span class="token punctuation">)</span>
 
-// 监听端口，启动程序
-app.listen(config.port, () =&gt; {
-    console.log(`${pkg.name} listening on port ${config.port}`)
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token comment">// 监听端口，启动程序</span>
+app<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>port<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>pkg<span class="token punctuation">.</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> listening on port </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>config<span class="token punctuation">.</span>port<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h2><pre class="line-numbers language-none"><code class="language-none">Class constructor MongoStore cannot be invoked without 'new'<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h2><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">Class constructor MongoStore cannot be invoked without <span class="token string">'new'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>查看 <code>package.json</code> 当前 <code>connect-mongo</code> 版本为 4.4，已不再适用这种写法，重新安装低版本(3.1.2)依赖可以解决</p>
-<pre class="line-numbers language-none"><code class="language-none">npm install connect-mongo@3.1.2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">npm install connect<span class="token operator">-</span>mongo@<span class="token number">3.1</span><span class="token number">.2</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
             </div>
