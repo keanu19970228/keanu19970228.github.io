@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    
+
+<meta charset="utf-8" >
+
+<title>Class constructor MongoStore cannot be invoked withou &#39;new&#39;</title>
+<meta name="keywords" content="Class constructor MongoStore cannot be invoked withou &#39;new&#39;, LuCarlo">
+<meta name="description" content="源码const path = require('path')
+const express = require('express')
+const session = require('express-session')
+const Mongo">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/images/avatar.png">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/fontawesome.css">
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+  <meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="LuCarlo" type="application/atom+xml">
+</head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://keanu19970228.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://keanu19970228.github.io">
+        <h1 class="site-title">LuCarlo</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">Class constructor MongoStore cannot be invoked withou &#39;new&#39;</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-08-12</span>
+            
+              <span>
+              <i class="icon-pricetags-outline"></i>
+                
+                  <a href="/tags/node-js/">
+                  -node.js
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content-wrapper">
+            <div class="post-content">
+              <h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><pre class="line-numbers language-none"><code class="language-none">const path = require('path')
+const express = require('express')
+const session = require('express-session')
+const MongoStore = require('connect-mongo')(session)
+const flash = require('connect-flash')
+const config = require('config-lite')(__dirname)
+const router = require('./routes')
+const pkg = require('./package')
+const routes = require('./routes')
+
+const app = express()
+
+// 设置模板目录
+app.set('views', path.join(__dirname, 'views'))
+// 设置模板引擎为 ejs
+app.set('view engine', 'ejs')
+
+// 设置静态文件目录
+app.use(express.static(path.join(__dirname, 'public')))
+// session 中间件
+app.use(session({
+    name: config.session.key, //设置 cookie 中保存 session id 的字段名称
+    secret: config.session.secret, // 设置 secret 来计算 hash 值并放在 cookie 中，使产生的 signedCookie 防篡改
+    resave: true, // 强制更新 session
+    saveUninitialized: false, // 设置为 false，强制创建一个 session，即使用户未登录
+    cookie: {
+        maxAge: config.session.maxAge //过期时间，过期后 cookie 中的 session id 会自动删除
+    },
+    store: new MongoStore({ // 将 session 存储到 mongodb
+        url: config.mongodb // mongodb 地址
+    })
+}))
+// flash 中间件，用来显示通知
+app.use(flash())
+
+// 路由
+routes(app)
+
+// 监听端口，启动程序
+app.listen(config.port, () =&gt; {
+    console.log(`${pkg.name} listening on port ${config.port}`)
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h2><pre class="line-numbers language-none"><code class="language-none">Class constructor MongoStore cannot be invoked without 'new'<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>查看 <code>package.json</code> 当前 <code>connect-mongo</code> 版本为 4.4，已不再适用这种写法，重新安装低版本(3.1.2)依赖可以解决</p>
+<pre class="line-numbers language-none"><code class="language-none">npm install connect-mongo@3.1.2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+            </div>
+            <div class="top-div">
+              <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E6%BA%90%E7%A0%81"><span class="top-box-text">源码</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E6%8A%A5%E9%94%99"><span class="top-box-text">报错</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="top-box-text">解决方案</span></a></li></ol>
+            </div>
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="/2022/08/11/supervisor/">
+              <h3 class="post-title">
+                下一篇：supervisor
+              </h3>
+            </a>
+          </div>
+        
+      </div>
+
+    
+
+
+      <footer>
+<div class="site-footer">
+  <div class="social-container">
+    <!-- 
+      
+        <a href="https://github.com/f-dong" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+     -->
+  </div>
+  <!-- 
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+   -->
+</div>
+</footer>
+
+
+    </div>
+    
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+  </body>
+</html>

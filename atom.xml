@@ -6,7 +6,7 @@
   <link href="http://keanu19970228.github.io/atom.xml" rel="self"/>
   
   <link href="http://keanu19970228.github.io/"/>
-  <updated>2022-08-11T09:38:17.873Z</updated>
+  <updated>2022-08-12T06:35:44.060Z</updated>
   <id>http://keanu19970228.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Class constructor MongoStore cannot be invoked withou &#39;new&#39;</title>
+    <link href="http://keanu19970228.github.io/2022/08/12/class-constructor-mongostore-cannot-be-invoked-withou-new/"/>
+    <id>http://keanu19970228.github.io/2022/08/12/class-constructor-mongostore-cannot-be-invoked-withou-new/</id>
+    <published>2022-08-12T06:26:50.000Z</published>
+    <updated>2022-08-12T06:35:44.060Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;源码&quot;&gt;&lt;a href=&quot;#源码&quot; class=&quot;headerlink&quot; title=&quot;源码&quot;&gt;&lt;/a&gt;源码&lt;/h2&gt;&lt;pre class=&quot;line-numbers language-none&quot;&gt;&lt;code</summary>
+        
+      
+    
+    
+    
+    
+    <category term="-node.js" scheme="http://keanu19970228.github.io/tags/node-js/"/>
+    
+  </entry>
   
   <entry>
     <title>supervisor</title>
