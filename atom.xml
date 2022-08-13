@@ -6,7 +6,7 @@
   <link href="http://keanu19970228.github.io/atom.xml" rel="self"/>
   
   <link href="http://keanu19970228.github.io/"/>
-  <updated>2022-08-12T06:39:50.706Z</updated>
+  <updated>2022-08-13T07:38:49.812Z</updated>
   <id>http://keanu19970228.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>PHP如何判断是否为手机端</title>
+    <link href="http://keanu19970228.github.io/2022/08/13/php-ru-he-pan-duan-shi-fou-wei-shou-ji-duan/"/>
+    <id>http://keanu19970228.github.io/2022/08/13/php-ru-he-pan-duan-shi-fou-wei-shou-ji-duan/</id>
+    <published>2022-08-13T07:37:46.000Z</published>
+    <updated>2022-08-13T07:38:49.812Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;pre class=&quot;line-numbers language-php&quot; data-language=&quot;php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;/**
+ * ismobile
+ *</summary>
+        
+      
+    
+    
+    
+    
+    <category term="php" scheme="http://keanu19970228.github.io/tags/php/"/>
+    
+    <category term="笔记" scheme="http://keanu19970228.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>Class constructor MongoStore cannot be invoked withou &#39;new&#39;</title>

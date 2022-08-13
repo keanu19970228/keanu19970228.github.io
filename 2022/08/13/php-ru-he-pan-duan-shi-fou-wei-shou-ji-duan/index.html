@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    
+
+<meta charset="utf-8" >
+
+<title>PHP如何判断是否为手机端</title>
+<meta name="keywords" content="PHP如何判断是否为手机端, LuCarlo">
+<meta name="description" content="/**
+ * ismobile
+ * @return boolean [description]
+ */
+function isMobile() {
+    // 如果有HTTP_X_WAP_PROFILE则一定是移动设备
+    if (">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/images/avatar.png">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/fontawesome.css">
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+  <meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="LuCarlo" type="application/atom+xml">
+</head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://keanu19970228.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://keanu19970228.github.io">
+        <h1 class="site-title">LuCarlo</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">PHP如何判断是否为手机端</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-08-13</span>
+            
+              <span>
+              <i class="icon-pricetags-outline"></i>
+                
+                  <a href="/tags/php/">
+                  php
+                    
+                      ，
+                    
+                  </a>
+                
+                  <a href="/tags/%E7%AC%94%E8%AE%B0/">
+                  笔记
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content-wrapper">
+            <div class="post-content">
+              <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">/**
+ * ismobile
+ * @return boolean [description]
+ */</span>
+<span class="token keyword">function</span> <span class="token function-definition function">isMobile</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 如果有HTTP_X_WAP_PROFILE则一定是移动设备</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_X_WAP_PROFILE'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token constant boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_VIA'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 找不到为flase,否则为true</span>
+        <span class="token keyword">return</span> <span class="token function">stristr</span><span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_VIA'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string double-quoted-string">"wap"</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token constant boolean">true</span> <span class="token punctuation">:</span> <span class="token constant boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 脑残法，判断手机发送的客户端标志,兼容性有待提高。其中'MicroMessenger'是电脑微信</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_USER_AGENT'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token variable">$clientkeywords</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'nokia'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'sony'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'ericsson'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'mot'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'samsung'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'htc'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'sgh'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'lg'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'sharp'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'sie-'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'philips'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'panasonic'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'alcatel'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'lenovo'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'iphone'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'ipod'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'blackberry'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'meizu'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'android'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'netfront'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'symbian'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'ucweb'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'windowsce'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'palm'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'operamini'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'operamobi'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'openwave'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'nexusone'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'cldc'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'midp'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'wap'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'mobile'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'MicroMessenger'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 从HTTP_USER_AGENT中查找手机浏览器的关键字</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">preg_match</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"/("</span> <span class="token operator">.</span> <span class="token function">implode</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'|'</span><span class="token punctuation">,</span> <span class="token variable">$clientkeywords</span><span class="token punctuation">)</span> <span class="token operator">.</span> <span class="token string double-quoted-string">")/i"</span><span class="token punctuation">,</span> <span class="token function">strtolower</span><span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_USER_AGENT'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token constant boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 协议法，因为有可能不准确，放到最后判断</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">isset</span> <span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_ACCEPT'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 如果只支持wml并且不支持html那一定是移动设备</span>
+        <span class="token comment">// 如果支持wml和html但是wml在html之前则是移动设备</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">strpos</span><span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_ACCEPT'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'vnd.wap.wml'</span><span class="token punctuation">)</span> <span class="token operator">!==</span> <span class="token constant boolean">false</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span><span class="token function">strpos</span><span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_ACCEPT'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'text/html'</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token keyword type-declaration">false</span> <span class="token operator">||</span> <span class="token punctuation">(</span><span class="token function">strpos</span><span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_ACCEPT'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'vnd.wap.wml'</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token function">strpos</span><span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_ACCEPT'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'text/html'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token constant boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token constant boolean">false</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+            </div>
+            <div class="top-div">
+              
+            </div>
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="/2022/08/12/class-constructor-mongostore-cannot-be-invoked-withou-new/">
+              <h3 class="post-title">
+                下一篇：Class constructor MongoStore cannot be invoked withou &#39;new&#39;
+              </h3>
+            </a>
+          </div>
+        
+      </div>
+
+    
+
+
+      <footer>
+<div class="site-footer">
+  <div class="social-container">
+    <!-- 
+      
+        <a href="https://github.com/f-dong" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+     -->
+  </div>
+  <!-- 
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+   -->
+</div>
+</footer>
+
+
+    </div>
+    
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+  </body>
+</html>
