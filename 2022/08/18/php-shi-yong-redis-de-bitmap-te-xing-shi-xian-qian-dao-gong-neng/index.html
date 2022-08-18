@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    
+
+<meta charset="utf-8" >
+
+<title>PHP 使用 Redis 的 BitMap 特性实现签到功能</title>
+<meta name="keywords" content="PHP 使用 Redis 的 BitMap 特性实现签到功能, LuCarlo">
+<meta name="description" content="一、BitMapBitMap原理
+bitMap 位图并不是一种数据结构，其实也就是 byte 数组，用二进制表示，只有 0 和 1 两个数字。基于string数据类型的按位操作符，高阶数据类型的一种。
+
+
+bitMap支持的最大位数是2^3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/images/avatar.png">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/fontawesome.css">
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+  <meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="LuCarlo" type="application/atom+xml">
+</head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://keanu19970228.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://keanu19970228.github.io">
+        <h1 class="site-title">LuCarlo</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">PHP 使用 Redis 的 BitMap 特性实现签到功能</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-08-18</span>
+            
+              <span>
+              <i class="icon-pricetags-outline"></i>
+                
+                  <a href="/tags/php/">
+                  php
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content-wrapper">
+            <div class="post-content">
+              <h3 id="一、BitMap"><a href="#一、BitMap" class="headerlink" title="一、BitMap"></a>一、BitMap</h3><h4 id="BitMap原理"><a href="#BitMap原理" class="headerlink" title="BitMap原理"></a>BitMap原理</h4><blockquote>
+<p>bitMap 位图并不是一种数据结构，其实也就是 byte 数组，用二进制表示，只有 0 和 1 两个数字。基于string数据类型的按位操作符，高阶数据类型的一种。</p>
+</blockquote>
+<blockquote>
+<p>bitMap支持的最大位数是2^32位,使用512M内存就可以存储多达42.9亿的字节信息。</p>
+</blockquote>
+<h4 id="BitMap操作命令"><a href="#BitMap操作命令" class="headerlink" title="BitMap操作命令"></a>BitMap操作命令</h4><ul>
+<li><code>gitbit</code><ul>
+<li>用法：getbit key offset</li>
+<li>含义：对key所存储的字符串值，获取指定偏移量上的位（bit）</li>
+</ul>
+</li>
+<li><code>setbit</code><ul>
+<li>用法：setbit key offset value</li>
+<li>含义：对key所存储的字符串值，设置或清除指定偏移量上的位（bit）  <ol>
+<li>返回值为该位在setbit之前的值  </li>
+<li>value只能取0或1  </li>
+<li>offset从0开始，即使原位图只能10位，offset可以取1000</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><code>bitcount</code><ul>
+<li>用法：bitcount key [start end]</li>
+<li>含义：获取位图指定范围中位值为1的个数。如果不指定start与end，则取所有</li>
+</ul>
+</li>
+<li><code>bitop</code><ul>
+<li>用法：bitop op destKey key1 [key2…]</li>
+<li>含义：做多个BitMap的and（交集）、or（并集）、not（非）、xor（异或）操作并将结果保存在destKey中</li>
+</ul>
+</li>
+<li><code>bitpos</code><ul>
+<li>用法：bitpos key tartgetBit [start end]</li>
+<li>含义：计算位图指定范围第一个偏移量对应的的值等于targetBit的位置  <ol>
+<li>找不到返回-1  </li>
+<li>start与end没有设置，则取全部  </li>
+<li>targetBit只能取0或者1</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><code>BITFIELD</code><ul>
+<li>用法：BITFIELD key [GET type offset] [SET type offset value] [INCRBY type offset increment] [OVERFLOW WRAP|SAT|FAIL]</li>
+<li>含义：自3.2.0起可用。该命令将 Redis 字符串视为一个位数组，并且能够处理具有不同位宽和任意非（必要）对齐偏移量的特定整数字段</li>
+</ul>
+</li>
+</ul>
+<h3 id="二、BitMap对比MySql"><a href="#二、BitMap对比MySql" class="headerlink" title="二、BitMap对比MySql"></a>二、BitMap对比MySql</h3><h4 id="mysql存储"><a href="#mysql存储" class="headerlink" title="mysql存储"></a>mysql存储</h4><ul>
+<li><blockquote>
+<p>mysql表结构</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>描述</th>
+<th>类型</th>
+<th>存储需求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>数据表主键</td>
+<td>bigInt</td>
+<td>8byte</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>用户id</td>
+<td>bigInt</td>
+<td>8byte</td>
+</tr>
+<tr>
+<td>sign_date</td>
+<td>签到日期</td>
+<td>DATETIME</td>
+<td>8btye</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>连续签到</td>
+<td>int</td>
+<td>4byte</td>
+</tr>
+</tbody></table>
+</li>
+<li><blockquote>
+<p>mysql占用存储空间</p>
+</blockquote>
+<ol>
+<li>1个用户1天签到数据：28Byte</li>
+<li>1000W用户1天签到数据：28Byte * 1000w = 268M</li>
+<li>1000W用户1年签到数据：268M * 365 = 95.6G</li>
+<li>1000W用户5年签到数据：95.6G * 5 = 478G</li>
+</ol>
+</li>
+</ul>
+<h4 id="redis-BitMap存储"><a href="#redis-BitMap存储" class="headerlink" title="redis BitMap存储"></a>redis BitMap存储</h4><ul>
+<li><blockquote>
+<p>redis BitMap存储</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>user_id_2021_04</td>
+<td>0 1 1 1 1 0 1 1 1 1 1 1 1 1 0 0…(签到最多31天)</td>
+</tr>
+</tbody></table>
+</li>
+<li><blockquote>
+<p>redis BitMap占用空间</p>
+</blockquote>
+<ol>
+<li>31位需要3Byte + key(1Byte)</li>
+<li>一个用户一个月签到数据：4Byte</li>
+<li>1000W用户1个月签到数据： 40M</li>
+<li>1000W用户1年签到数据：40M * 12 = 480M</li>
+<li>1000W用户5年签到数据：480M * 5 = 2G</li>
+</ol>
+</li>
+</ul>
+<h3 id="三、命令行实现BitMap签到"><a href="#三、命令行实现BitMap签到" class="headerlink" title="三、命令行实现BitMap签到"></a>三、命令行实现BitMap签到</h3><h4 id="签到"><a href="#签到" class="headerlink" title="签到"></a>签到</h4><ol>
+<li><p>用户id为123的用户2021年3月1号签到</p>
+<pre class="line-numbers language-none"><code class="language-none">$ setBit sign:123:202103 0 1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>用户id为123的用户2021年3月2号签到</p>
+<pre class="line-numbers language-none"><code class="language-none">$ setBit sign:123:202103 1 1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+</ol>
+<h4 id="获取签到"><a href="#获取签到" class="headerlink" title="获取签到"></a>获取签到</h4><ol>
+<li><blockquote>
+<p>查看用户id为123的用户2021年3月1号签到</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">$ getBit sign:123:202103 0<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><blockquote>
+<p>查看用户id为123的用户2021年3月2号签到</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">$ getBit sign:123:202103 1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><blockquote>
+<p>查看用户id为123的用户2021年3月 <code>首次签到</code></p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">$ bitPos sign:123:202103 1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><blockquote>
+<p>查看用户id为123的用户2021年3月 <code>首次漏签</code></p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">$ bitPos sign:123:202103 0<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><blockquote>
+<p>查看用户指定范围内的签到 返回的是十进制</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">bitfield sign:123:202103 get u3 6<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+</ol>
+<h4 id="统计签到"><a href="#统计签到" class="headerlink" title="统计签到"></a>统计签到</h4><ul>
+<li><p>获取用户当月签到次数</p>
+<pre class="line-numbers language-none"><code class="language-none">$ bitCount sign:123:202103<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+</ul>
+<h3 id="四、PHP实现BitMap签到"><a href="#四、PHP实现BitMap签到" class="headerlink" title="四、PHP实现BitMap签到"></a>四、PHP实现BitMap签到</h3><h4 id="签到-1"><a href="#签到-1" class="headerlink" title="签到"></a>签到</h4><ol>
+<li><blockquote>
+<p>用户id为123的用户2021年3月8号签到</p>
+</blockquote>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+    <span class="token variable">$redis</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Redis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'11'</span><span class="token punctuation">,</span> <span class="token number">6379</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$key</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'sign:123:202103'</span><span class="token punctuation">;</span>
+    <span class="token variable">$day</span> <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">;</span>
+    <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">setBit</span><span class="token punctuation">(</span><span class="token variable">$key</span><span class="token punctuation">,</span> <span class="token variable">$day</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><blockquote>
+<p>用户id为123的用户2021年3月10号签到</p>
+</blockquote>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+    <span class="token variable">$redis</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Redis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'11'</span><span class="token punctuation">,</span> <span class="token number">6379</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$key</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'sign:123:202103'</span><span class="token punctuation">;</span>
+    <span class="token variable">$day</span> <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+    <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">setBit</span><span class="token punctuation">(</span><span class="token variable">$key</span><span class="token punctuation">,</span> <span class="token variable">$day</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<h4 id="查看签到"><a href="#查看签到" class="headerlink" title="查看签到"></a>查看签到</h4><ol>
+<li><blockquote>
+<p>查看用户id为123的用户2021年3月10号签到</p>
+</blockquote>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+    <span class="token variable">$redis</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Redis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'11'</span><span class="token punctuation">,</span> <span class="token number">6379</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$key</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'sign:123:202103'</span><span class="token punctuation">;</span>
+    <span class="token variable">$day</span> <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">;</span>
+    <span class="token variable">$sign</span> <span class="token operator">=</span> <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">getBit</span><span class="token punctuation">(</span><span class="token variable">$key</span><span class="token punctuation">,</span> <span class="token variable">$day</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$sign</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><blockquote>
+<p>查看用户id为123的用户2021年3月份的签到情况( <code>bitmap</code> 实际就是 <code>string</code> 类型，使用 <code>Get</code>)</p>
+</blockquote>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+    <span class="token variable">$redis</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Redis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'11'</span><span class="token punctuation">,</span> <span class="token number">6379</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$key</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'sign:123:202103'</span><span class="token punctuation">;</span>
+    <span class="token variable">$sign</span> <span class="token operator">=</span> <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token variable">$key</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//这里查出来的是二进制字符串</span>
+    <span class="token variable">$bitmap_bin_str</span> <span class="token operator">=</span> <span class="token function">StrToBin</span><span class="token punctuation">(</span><span class="token variable">$sign</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token variable">$i</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token variable">$i</span> <span class="token operator">&lt;=</span> <span class="token number">31</span><span class="token punctuation">;</span> <span class="token variable">$i</span><span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">echo</span> <span class="token variable">$i</span><span class="token operator">.</span><span class="token string single-quoted-string">'号签到'</span><span class="token operator">.</span><span class="token variable">$bitmap_bin_str</span><span class="token punctuation">{</span><span class="token variable">$i</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">}</span><span class="token operator">.</span><span class="token constant">PHP_EOL</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment"># 二进制字符串转字符</span>
+    <span class="token keyword">function</span> <span class="token function-definition function">StrToBin</span><span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token variable">$arr</span> <span class="token operator">=</span> <span class="token function">preg_split</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'/(?&lt;!^)(?!$)/u'</span><span class="token punctuation">,</span> <span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">foreach</span><span class="token punctuation">(</span><span class="token variable">$arr</span> <span class="token keyword">as</span> <span class="token operator">&amp;</span><span class="token variable">$v</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token variable">$temp</span> <span class="token operator">=</span> <span class="token function">unpack</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'H*'</span><span class="token punctuation">,</span> <span class="token variable">$v</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token variable">$v</span> <span class="token operator">=</span> <span class="token function">base_convert</span><span class="token punctuation">(</span><span class="token variable">$temp</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">unset</span><span class="token punctuation">(</span><span class="token variable">$temp</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token function">join</span><span class="token punctuation">(</span><span class="token string single-quoted-string">' '</span><span class="token punctuation">,</span><span class="token variable">$arr</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token delimiter important">?&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><blockquote>
+<p>查看用户id为123的用户2021年3月 <code>首次签到</code></p>
+</blockquote>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+<span class="token variable">$redis</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Redis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'11'</span><span class="token punctuation">,</span> <span class="token number">6379</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$key</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'sign:123:202103'</span><span class="token punctuation">;</span>
+<span class="token variable">$day</span> <span class="token operator">=</span> <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">bitPos</span><span class="token punctuation">(</span><span class="token variable">$key</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$day</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="4">
+<li>查看用户id为123的用户2021年3月 <code>首次漏签</code></li>
+</ol>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+<span class="token variable">$redis</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Redis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'11'</span><span class="token punctuation">,</span> <span class="token number">6379</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$key</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'sign:123:202103'</span><span class="token punctuation">;</span>
+<span class="token variable">$day</span> <span class="token operator">=</span> <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">bitPos</span><span class="token punctuation">(</span><span class="token variable">$key</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$day</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<h4 id="统计签到-1"><a href="#统计签到-1" class="headerlink" title="统计签到"></a>统计签到</h4><ol>
+<li><blockquote>
+<p>查看用户id为123的用户2021年3月份签到次数</p>
+</blockquote>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+    <span class="token variable">$redis</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Redis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'11'</span><span class="token punctuation">,</span> <span class="token number">6379</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$key</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'sign:123:202103'</span><span class="token punctuation">;</span>
+    <span class="token variable">$count</span> <span class="token operator">=</span> <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">bitcount</span><span class="token punctuation">(</span><span class="token variable">$key</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$count</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><blockquote>
+<p>查看用户id为123的用户2021年3月8号连续签到次数</p>
+</blockquote>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+    <span class="token variable">$redis</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Redis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$redis</span><span class="token operator">-&gt;</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'11'</span><span class="token punctuation">,</span> <span class="token number">6379</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$key</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'sign:123:202103'</span><span class="token punctuation">;</span>
+    <span class="token variable">$str</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'1111001110000000000000000000000'</span><span class="token punctuation">;</span> <span class="token comment">//用户当月签到情况</span>
+    <span class="token variable">$day</span> <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">{</span><span class="token variable">$day</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">}</span> <span class="token operator">==</span> <span class="token string single-quoted-string">'0'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">exit</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token variable">$count</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token variable">$i</span><span class="token operator">=</span><span class="token variable">$day</span><span class="token punctuation">;</span> <span class="token variable">$i</span><span class="token operator">&gt;=</span><span class="token number">0</span><span class="token punctuation">;</span> <span class="token variable">$i</span><span class="token operator">--</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// var_dump($i-1);</span>
+        <span class="token variable">$sign</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">{</span><span class="token variable">$i</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">{</span><span class="token variable">$i</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$sign</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$count</span> <span class="token operator">+=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$count</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+<h3 id="五、使用经验和资料参考"><a href="#五、使用经验和资料参考" class="headerlink" title="五、使用经验和资料参考"></a>五、使用经验和资料参考</h3><h4 id="使用经验"><a href="#使用经验" class="headerlink" title="使用经验"></a>使用经验</h4><ul>
+<li>BitMap 是 sting 类型，最大 512 MB</li>
+<li>注意 setbit 时的偏移量，可能有较大耗时</li>
+<li>位图不是绝对好,获取不到签到的准确时间，只能判断指定日期有没有签到。</li>
+<li>redis配合mysql使用，当月数据存redis，上月数据同步到mysql（一个月数据的签到存一条mysql数据）。</li>
+<li>签到日志可以配合nongoDB使用。</li>
+</ul>
+<h4 id="资料参考"><a href="#资料参考" class="headerlink" title="资料参考"></a>资料参考</h4><ul>
+<li>reids官网</li>
+<li>PHP redis扩展</li>
+</ul>
+
+            </div>
+            <div class="top-div">
+              <ol class="top-box"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#%E4%B8%80%E3%80%81BitMap"><span class="top-box-text">一、BitMap</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#%E4%BA%8C%E3%80%81BitMap%E5%AF%B9%E6%AF%94MySql"><span class="top-box-text">二、BitMap对比MySql</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#%E4%B8%89%E3%80%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%AE%9E%E7%8E%B0BitMap%E7%AD%BE%E5%88%B0"><span class="top-box-text">三、命令行实现BitMap签到</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#%E5%9B%9B%E3%80%81PHP%E5%AE%9E%E7%8E%B0BitMap%E7%AD%BE%E5%88%B0"><span class="top-box-text">四、PHP实现BitMap签到</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#%E4%BA%94%E3%80%81%E4%BD%BF%E7%94%A8%E7%BB%8F%E9%AA%8C%E5%92%8C%E8%B5%84%E6%96%99%E5%8F%82%E8%80%83"><span class="top-box-text">五、使用经验和资料参考</span></a></li></ol>
+            </div>
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="/2022/08/13/php-ru-he-pan-duan-shi-fou-wei-shou-ji-duan/">
+              <h3 class="post-title">
+                下一篇：PHP如何判断是否为手机端
+              </h3>
+            </a>
+          </div>
+        
+      </div>
+
+    
+
+
+      <footer>
+<div class="site-footer">
+  <div class="social-container">
+    <!-- 
+      
+        <a href="https://github.com/f-dong" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+     -->
+  </div>
+  <!-- 
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+   -->
+</div>
+</footer>
+
+
+    </div>
+    
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+  </body>
+</html>
